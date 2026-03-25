@@ -1,0 +1,54 @@
+\section{Governance \& Community}
+
+\begin{frame}{Open Governance, Open Community}
+  \scriptsize
+  \begin{block}{Core Message}
+    \scriptsize
+    OpenCollage is built in the open from day one---Apache 2.0 licensed,
+    community-governed, with an RFC process that ensures no single vendor
+    controls the standard.
+  \end{block}
+
+  \vspace{0.3cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.65, transform shape,
+        gbox/.style={rectangle, draw, thick, rounded corners,
+                     text width=2.6cm, text centered, minimum height=1.8cm, font=\tiny\bfseries}]
+
+      \node[gbox, fill=orchblue!15] (spec) at (0,0) {
+        \faIcon{file-alt}\ Open Spec\\[4pt]
+        \normalfont\tiny YAML/JSON schemas\\
+        Protocol definitions\\
+        RFC process
+      };
+      \node[gbox, fill=orchgreen!15] (impl) at (3.8,0) {
+        \faCode\ Reference Impl\\[4pt]
+        \normalfont\tiny Python + Rust runtime\\
+        Adapter SDKs\\
+        CLI tooling
+      };
+      \node[gbox, fill=orchorange!15] (gov) at (7.6,0) {
+        \faUsers\ Governance\\[4pt]
+        \normalfont\tiny Technical Steering\\Committee\\
+        Vendor-neutral charter\\
+        Community SIGs
+      };
+      \node[gbox, fill=orchpurple!15] (eco) at (11.4,0) {
+        \faIcon{puzzle-piece}\ Ecosystem\\[4pt]
+        \normalfont\tiny Adapter marketplace\\
+        Pipeline catalog\\
+        Conformance tests
+      };
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.2cm}
+
+  \begin{itemize}
+    \item \textbf{Apache 2.0 License}: Permissive, enterprise-friendly, no CLA barriers
+    \item \textbf{RFC-driven evolution}: All protocol changes go through public proposal and review
+    \item \textbf{Conformance suite}: Automated tests verify that adapters meet the standard
+    \item \textbf{CNCF trajectory}: Designed for eventual submission as a CNCF sandbox project
+  \end{itemize}
+\end{frame}

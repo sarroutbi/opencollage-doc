@@ -1,0 +1,65 @@
+\section{Framework-Agnostic Execution}
+
+\begin{frame}{Not a Competitor---An Enabler}
+  \scriptsize
+  \begin{block}{Core Message}
+    \scriptsize
+    OpenCollage does not replace AutoGen, CrewAI, or LangGraph. It provides
+    a thin adapter layer so that agents from \textbf{any} framework participate
+    as first-class nodes in a shared DAG.
+  \end{block}
+
+  \vspace{-0.2cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.62, transform shape,
+        adapter/.style={trapezium, draw, thick, trapezium angle=75, fill=orchgreen!15,
+                        text width=1.6cm, text centered, minimum height=0.7cm, font=\tiny\bfseries},
+        fw/.style={rectangle, draw, thick, rounded corners, fill=orchblue!15,
+                   text width=1.8cm, text centered, minimum height=0.8cm, font=\tiny\bfseries},
+        oc/.style={rectangle, draw, very thick, rounded corners, fill=orchgreen!20,
+                   text width=9cm, text centered, minimum height=0.9cm, font=\scriptsize\bfseries}]
+
+      % OpenCollage runtime
+      \node[oc] (runtime) at (4.5,2.5) {\faCogs\ \ OpenCollage Runtime (DAG Executor)};
+
+      % Adapters
+      \node[adapter] (ad1) at (0,1) {Adapter};
+      \node[adapter] (ad2) at (3,1) {Adapter};
+      \node[adapter] (ad3) at (6,1) {Adapter};
+      \node[adapter] (ad4) at (9,1) {Adapter};
+
+      % Frameworks
+      \node[fw] (f1) at (0,0) {AutoGen};
+      \node[fw] (f2) at (3,0) {CrewAI};
+      \node[fw] (f3) at (6,0) {LangGraph};
+      \node[fw] (f4) at (9,0) {Your SDK};
+
+      % Connections
+      \draw[->, thick] (f1) -- (ad1);
+      \draw[->, thick] (f2) -- (ad2);
+      \draw[->, thick] (f3) -- (ad3);
+      \draw[->, thick] (f4) -- (ad4);
+      \draw[->, thick, orchgreen] (ad1) -- (ad1 |- runtime.south);
+      \draw[->, thick, orchgreen] (ad2) -- (ad2 |- runtime.south);
+      \draw[->, thick, orchgreen] (ad3) -- (ad3 |- runtime.south);
+      \draw[->, thick, orchgreen] (ad4) -- (ad4 |- runtime.south);
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.1cm}
+
+  \fontsize{6}{7}\selectfont
+  \textbf{The Adapter Contract} (what framework authors implement):
+  \begin{enumerate}
+    \item \texttt{initialize(config)} --- Bootstrap the agent from pipeline YAML
+    \item \texttt{execute(input, state)} --- Run the agent and return typed output
+    \item \texttt{emit\_telemetry(span)} --- Report execution telemetry via OTLP
+  \end{enumerate}
+  \vspace{-0.2cm}
+  \begin{exampleblock}{}
+    \fontsize{6}{7}\selectfont
+    Three methods. That is the entire surface area a framework needs to implement
+    to join the OpenCollage ecosystem.
+  \end{exampleblock}
+\end{frame}

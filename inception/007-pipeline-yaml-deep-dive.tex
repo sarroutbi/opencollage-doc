@@ -1,0 +1,162 @@
+\begin{frame}[fragile]{\fontsize{11}{13}\selectfont Security Incident Pipeline: Full YAML Specification (1/2)}
+  \vspace{-0.2cm}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \begin{lstlisting}[language=,basicstyle=\ttfamily\fontsize{4}{4.8}\selectfont,title={\tiny\bfseries incident-response.yaml --- Header \& Agents}]
+apiVersion: opencollage/v1
+kind: Pipeline
+metadata:
+  name: security-incident-response
+  version: 1.2.0
+  labels:
+    domain: security
+    compliance: soc2
+spec:
+  timeout: 600s
+  retry_policy:
+    max_retries: 2
+    backoff: exponential
+
+  agents:
+    - id: alert-triage
+      framework: crewai
+      config:
+        role: "Senior SOC Analyst"
+        model: gpt-4o
+        temperature: 0.1
+        tools: [siem_query, asset_lookup]
+      resources:
+        max_tokens: 4096
+
+    - id: threat-intel
+      framework: langgraph
+      config:
+        graph: threat_correlation
+        model: claude-sonnet-4-20250514
+        state_schema: ThreatGraphState
+        tools: [mitre_att&ck, otx_lookup]
+
+    - id: vuln-analysis
+      framework: langgraph
+      config:
+        graph: vulnerability_scan
+        model: gpt-4o
+        tools: [cve_db, nvd_api]
+      \end{lstlisting}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{lstlisting}[language=,basicstyle=\ttfamily\fontsize{4}{4.8}\selectfont,title={\tiny\bfseries incident-response.yaml --- Agents (cont.)}]
+    - id: remediation-codegen
+      framework: autogen
+      config:
+        agent_type: AssistantAgent
+        model: claude-sonnet-4-20250514
+        code_execution:
+          executor: docker
+          sandbox: true
+          allowed_langs: [python, bash]
+        tools:
+          - github_pr_create
+          - ansible_playbook_gen
+
+    - id: executive-report
+      framework: crewai
+      config:
+        role: "Security Communications Lead"
+        model: gpt-4o
+        output_format: markdown
+        tools: [jira_create, slack_notify]
+
+    - id: human-approval
+      framework: builtin
+      config:
+        type: approval_gate
+        approvers: [soc-lead, ciso]
+        timeout: 3600s
+        escalation:
+          after: 1800s
+          notify: [pagerduty]
+      \end{lstlisting}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{\fontsize{11}{13}\selectfont Security Incident Pipeline: Full YAML Specification (2/2)}
+  \vspace{-0.2cm}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \begin{lstlisting}[language=,basicstyle=\ttfamily\fontsize{4}{4.8}\selectfont,title={\tiny\bfseries incident-response.yaml --- DAG \& Routing}]
+  dag:
+    edges:
+      - from: alert-triage
+        to: [threat-intel, vuln-analysis]
+        condition:
+          field: severity
+          operator: in
+          values: [HIGH, CRITICAL]
+        mode: parallel
+
+      - from: alert-triage
+        to: vuln-analysis
+        condition:
+          field: severity
+          operator: in
+          values: [MEDIUM, LOW]
+
+      - from: [threat-intel, vuln-analysis]
+        to: remediation-codegen
+        join: all  # fan-in: wait for both
+
+      - from: remediation-codegen
+        to: human-approval
+
+      - from: human-approval
+        to: executive-report
+        condition:
+          field: decision
+          operator: eq
+          values: [approved]
+      \end{lstlisting}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{lstlisting}[language=,basicstyle=\ttfamily\fontsize{4}{4.8}\selectfont,title={\tiny\bfseries incident-response.yaml --- Handoff Schemas}]
+  schemas:
+    TriageResult:
+      type: object
+      required: [alert_id, severity, summary]
+      properties:
+        alert_id:
+          type: string
+          format: uuid
+        severity:
+          type: string
+          enum: [LOW, MEDIUM, HIGH, CRITICAL]
+        summary:
+          type: string
+          maxLength: 2048
+        affected_assets:
+          type: array
+          items:
+            type: object
+            properties:
+              hostname: {type: string}
+              ip: {type: string, format: ipv4}
+              criticality: {type: string}
+
+  handoffs:
+    - from: alert-triage
+      to: [threat-intel, vuln-analysis]
+      schema: TriageResult
+    - from: [threat-intel, vuln-analysis]
+      to: remediation-codegen
+      schema: EnrichedIncident
+    - from: remediation-codegen
+      to: human-approval
+      schema: RemediationPlan
+    - from: human-approval
+      to: executive-report
+      schema: ApprovedRemediation
+      \end{lstlisting}
+    \end{column}
+  \end{columns}
+\end{frame}

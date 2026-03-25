@@ -1,0 +1,611 @@
+\section{Patentable Innovations (Defensive)}
+
+\begin{frame}{\fontsize{10}{12}\selectfont Defensive Patent Candidates: Protecting Open Agent Orchestration}
+  \vspace{-0.2cm}
+  \begin{block}{\scriptsize Red Hat Patent Promise}
+    \scriptsize
+    Red Hat's patents exist to \textbf{defend open source}, not to restrict it.
+    By patenting OpenCollage's core innovations, we prevent proprietary vendors
+    from locking down AI agent orchestration---the same way Red Hat's patent
+    portfolio protects the container and Kubernetes ecosystem.
+  \end{block}
+
+  \vspace{0.1cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.6, transform shape,
+        cand/.style={rectangle, draw, thick, rounded corners,
+                     text width=2.5cm, text centered, minimum height=1.4cm, font=\tiny\bfseries}]
+
+      \node[cand, fill=orchblue!15] (c1) at (0,0) {
+        \faIcon{plug}\\[2pt] Candidate 1\\[2pt]
+        \normalfont\tiny Framework-Agnostic\\Adapter Contract
+      };
+      \node[cand, fill=orchgreen!15] (c2) at (2.9,0) {
+        \faIcon{database}\\[2pt] Candidate 2\\[2pt]
+        \normalfont\tiny Agent Registry with\\Conformance Trust
+      };
+      \node[cand, fill=orchorange!15] (c3) at (5.8,0) {
+        \faIcon{project-diagram}\\[2pt] Candidate 3\\[2pt]
+        \normalfont\tiny Declarative Agent\\Pipeline Definitions
+      };
+      \node[cand, fill=orchpurple!15] (c4) at (8.7,0) {
+        \faIcon{shield-alt}\\[2pt] Candidate 4\\[2pt]
+        \normalfont\tiny Agent Supply\\Chain Security
+      };
+      \node[cand, fill=orchred!15] (c5) at (11.6,0) {
+        \faIcon{undo}\\[2pt] Candidate 5\\[2pt]
+        \normalfont\tiny Cross-Framework\\State \& Replay
+      };
+
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.1cm}
+
+  \fontsize{6}{7}\selectfont
+  \begin{alertblock}{\fontsize{6}{7}\selectfont Why Now?}
+    \fontsize{6}{7}\selectfont
+    \begin{itemize}
+      \setlength{\itemsep}{0pt}
+      \item The AI agent orchestration space is \textbf{largely unpatented}---no Red Hat patents exist in this area
+      \item Proprietary vendors (LangChain, CrewAI, Microsoft/AutoGen) could patent their approaches, creating lock-in
+      \item Filing now establishes \textbf{priority dates} before the space matures
+      \item All filings align with Red Hat's Patent Promise: patents protect open-source implementations
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+%% ============================================================
+%% CANDIDATE 1: Framework-Agnostic Adapter Contract
+%% ============================================================
+
+\begin{frame}{\fontsize{9}{11}\selectfont Patent Candidate 1: Framework-Agnostic Agent Orchestration via Adapter Contract}
+  \vspace{-0.3cm}
+
+  \fontsize{5.5}{6.5}\selectfont
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{alertblock}{\fontsize{5.5}{6.5}\selectfont Problem (Prior Art)}
+      \fontsize{5.5}{6.5}\selectfont
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item AI agent frameworks (AutoGen, CrewAI, LangGraph) define
+              \textbf{incompatible} agent interfaces
+        \item No standard exists for an agent from one framework to participate
+              as a node in another framework's workflow
+        \item Existing orchestration (Kubernetes, Airflow) manages
+              \textbf{containers/tasks}, not \textbf{AI agents} with typed
+              handoffs and telemetry
+        \item Each integration requires bespoke glue code---$O(n^2)$ adapters
+              for $n$ frameworks
+      \end{itemize}
+    \end{alertblock}
+
+    \begin{block}{\fontsize{5.5}{6.5}\selectfont Novel Contribution}
+      \fontsize{5.5}{6.5}\selectfont
+      A \textbf{minimal, universal adapter contract} (three methods) that any AI
+      agent framework implements to become a first-class node in a shared
+      orchestration DAG:
+      \begin{enumerate}
+        \setlength{\itemsep}{0pt}
+        \item \texttt{initialize(config)} --- bootstrap from declarative YAML
+        \item \texttt{execute(input, checkpoint)} --- run with typed I/O and
+              state checkpointing
+        \item \texttt{emit\_telemetry(span)} --- report execution metrics via
+              OpenTelemetry
+      \end{enumerate}
+      The contract reduces $O(n^2)$ integrations to $O(n)$ adapters.
+    \end{block}
+
+    \column{0.48\textwidth}
+    \begin{center}
+      \begin{tikzpicture}[scale=0.55, transform shape,
+          fw/.style={rectangle, draw, thick, rounded corners, fill=orchblue!10,
+                     text width=1.6cm, text centered, minimum height=0.8cm, font=\fontsize{6}{7}\selectfont\bfseries},
+          adapt/.style={trapezium, draw, thick, trapezium angle=75, fill=orchgreen!15,
+                        text width=1.2cm, text centered, minimum height=0.6cm, font=\fontsize{5}{6}\selectfont\bfseries},
+          rt/.style={rectangle, draw, very thick, rounded corners, fill=orchgreen!20,
+                     text width=7cm, text centered, minimum height=0.8cm, font=\fontsize{7}{8}\selectfont\bfseries}]
+
+        \node[rt] (runtime) at (3.5,4.5) {o9e Runtime (DAG Executor)};
+
+        \node[adapt] (a1) at (0,3) {Adapter};
+        \node[adapt] (a2) at (2.3,3) {Adapter};
+        \node[adapt] (a3) at (4.7,3) {Adapter};
+        \node[adapt] (a4) at (7,3) {Adapter};
+
+        \node[fw] (f1) at (0,1.8) {AutoGen};
+        \node[fw] (f2) at (2.3,1.8) {CrewAI};
+        \node[fw] (f3) at (4.7,1.8) {LangGraph};
+        \node[fw] (f4) at (7,1.8) {Custom};
+
+        \draw[->, thick] (f1) -- (a1);
+        \draw[->, thick] (f2) -- (a2);
+        \draw[->, thick] (f3) -- (a3);
+        \draw[->, thick] (f4) -- (a4);
+        \draw[->, thick, orchgreen] (a1) -- (a1 |- runtime.south);
+        \draw[->, thick, orchgreen] (a2) -- (a2 |- runtime.south);
+        \draw[->, thick, orchgreen] (a3) -- (a3 |- runtime.south);
+        \draw[->, thick, orchgreen] (a4) -- (a4 |- runtime.south);
+
+        %% Contract box
+        \node[rectangle, draw, dashed, orchblue, thick, rounded corners,
+              text width=6.5cm, minimum height=1cm, font=\fontsize{5.5}{6.5}\selectfont,
+              align=left, fill=white] at (3.5,0.3) {
+          \textbf{Adapter Contract (3 methods):}\\
+          1. \texttt{initialize(AgentConfig) -> void}\\
+          2. \texttt{execute(HandoffPayload, Checkpoint) -> ExecutionResult}\\
+          3. \texttt{emit\_telemetry(OTelSpan) -> void}
+        };
+      \end{tikzpicture}
+    \end{center}
+
+    \begin{exampleblock}{\fontsize{5.5}{6.5}\selectfont Differentiation from Prior Art}
+      \fontsize{5.5}{6.5}\selectfont
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item \textbf{vs.\ Kubernetes CRI}: CRI standardizes container runtimes;
+              this standardizes \emph{AI agent} runtimes with typed data handoffs
+        \item \textbf{vs.\ MCP (Anthropic)}: MCP standardizes tool access;
+              this standardizes \emph{agent-to-agent} orchestration
+        \item \textbf{vs.\ A2A (Google)}: A2A defines agent communication;
+              this defines agent \emph{lifecycle and execution} within a DAG
+      \end{itemize}
+    \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+%% ============================================================
+%% CANDIDATE 2: Agent Registry with Conformance-Based Trust
+%% ============================================================
+
+\begin{frame}{\fontsize{9}{11}\selectfont Patent Candidate 2: Agent Registry with Conformance-Based Trust}
+  \vspace{-0.3cm}
+
+  \fontsize{5.5}{6.5}\selectfont
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{alertblock}{\fontsize{5.5}{6.5}\selectfont Problem (Prior Art)}
+      \fontsize{5.5}{6.5}\selectfont
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item Container registries (Docker Hub, Quay.io) store \textbf{container images},
+              not AI agent artifacts
+        \item AI agents have unique metadata: model version, tools, system prompts,
+              framework adapter, conformance status
+        \item No standard packaging format exists for distributing AI agents as
+              versioned, signed, discoverable artifacts
+        \item Model registries (MLflow, HuggingFace) store \textbf{models}, not
+              \textbf{complete agent packages} (model + tools + config + adapter)
+      \end{itemize}
+    \end{alertblock}
+
+    \begin{block}{\fontsize{5.5}{6.5}\selectfont Novel Contribution}
+      \fontsize{5.5}{6.5}\selectfont
+      An \textbf{Agent Registry} system that:
+      \begin{enumerate}
+        \setlength{\itemsep}{0pt}
+        \item Defines a standard \textbf{Agent Package} format (agent manifest
+              YAML: model + tools + adapter + prompts + dependencies)
+        \item Supports \textbf{semantic versioning} with immutable digests
+        \item Integrates \textbf{conformance testing} as a gating mechanism:
+              agents must pass the test suite to receive a conformance badge
+        \item Enables \texttt{o9ectl push/pull} workflows analogous to
+              \texttt{docker push/pull}
+        \item Supports \textbf{agent composition}: agents can declare
+              dependencies on other registered agents
+      \end{enumerate}
+    \end{block}
+
+    \column{0.48\textwidth}
+    \begin{center}
+      \begin{tikzpicture}[scale=0.52, transform shape,
+          rbox/.style={rectangle, draw, thick, rounded corners, fill=orchgreen!10,
+                       text width=2.8cm, text centered, minimum height=0.9cm,
+                       font=\fontsize{6}{7}\selectfont\bfseries}]
+
+        %% Registry
+        \node[rectangle, draw, very thick, rounded corners, fill=orchgreen!20,
+              text width=5.5cm, text centered, minimum height=0.9cm,
+              font=\fontsize{7}{8}\selectfont\bfseries] (reg) at (3,5.5)
+              {\faIcon{database}\ o9e Agent Registry};
+
+        %% Agent packages
+        \node[rbox] (p1) at (0.5,3.8) {\faIcon{robot}\ security-analyst\\v2.1.0};
+        \node[rbox] (p2) at (5.5,3.8) {\faIcon{robot}\ code-reviewer\\v1.4.2};
+
+        %% Metadata
+        \node[rectangle, draw, rounded corners, fill=orchblue!8,
+              text width=2.5cm, minimum height=1.8cm, font=\fontsize{6}{7}\selectfont,
+              align=left] (m1) at (0.5,1.8) {
+          \textbf{Manifest:}\\
+          framework: crewai\\
+          model: gpt-4o\\
+          tools: [siem, asset]\\
+          conformance: gold\\
+          signed: sigstore
+        };
+        \node[rectangle, draw, rounded corners, fill=orchblue!8,
+              text width=2.5cm, minimum height=1.8cm, font=\fontsize{6}{7}\selectfont,
+              align=left] (m2) at (5.5,1.8) {
+          \textbf{Manifest:}\\
+          framework: autogen\\
+          model: claude-sonnet\\
+          tools: [github, lint]\\
+          conformance: silver\\
+          signed: sigstore
+        };
+
+        \draw[->, thick, orchgreen] (reg) -- (p1);
+        \draw[->, thick, orchgreen] (reg) -- (p2);
+        \draw[->, thick, orchblue!50] (p1) -- (m1);
+        \draw[->, thick, orchblue!50] (p2) -- (m2);
+
+        %% CLI
+        \node[rectangle, draw, dashed, orchgray, rounded corners,
+              text width=5.5cm, font=\fontsize{6.5}{7.5}\selectfont, align=center,
+              fill=white] at (3,0.2) {
+          \texttt{o9ectl push security-analyst:2.1.0}\\
+          \texttt{o9ectl pull code-reviewer:1.4.2}\\
+          \texttt{o9ectl inspect security-analyst:2.1.0}
+        };
+      \end{tikzpicture}
+    \end{center}
+
+    \begin{exampleblock}{\fontsize{5.5}{6.5}\selectfont Differentiation from Prior Art}
+      \fontsize{5.5}{6.5}\selectfont
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item \textbf{vs.\ Docker Hub / Quay.io}: stores containers, not agents;
+              no concept of model version, tool manifest, or conformance badge
+        \item \textbf{vs.\ HuggingFace Hub}: stores models, not complete agent
+              packages with tools, prompts, adapter, and conformance metadata
+        \item \textbf{vs.\ MLflow Registry}: tracks model experiments; does not
+              package agents as deployable, signed, composable artifacts
+        \item \textbf{vs.\ npm / PyPI}: stores code packages; no agent-specific
+              metadata (model, tools, conformance, provenance)
+      \end{itemize}
+    \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+%% ============================================================
+%% CANDIDATE 3: Declarative Agent Pipeline Definitions
+%% ============================================================
+
+\begin{frame}{\fontsize{8}{10}\selectfont Patent Candidate 3: Declarative Agent Pipeline Definitions (DAGs as Code)}
+  \vspace{-0.3cm}
+
+  \fontsize{5.5}{6.5}\selectfont
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{alertblock}{\fontsize{5.5}{6.5}\selectfont Problem (Prior Art)}
+      \fontsize{5.5}{6.5}\selectfont
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item CI/CD pipeline definitions (Tekton, GitHub Actions, Argo) define
+              \textbf{task} DAGs, not \textbf{AI agent} DAGs
+        \item Agent frameworks define workflows \textbf{imperatively} in code
+              (Python classes, function chains), not declaratively
+        \item No standard exists for a portable, version-controlled YAML/JSON
+              spec that defines multi-agent pipelines with typed handoff schemas,
+              mixed-framework agent nodes, human-in-the-loop approval gates,
+              and cost/token budget constraints
+        \item Existing agent DAGs are \textbf{framework-locked}: a CrewAI
+              pipeline cannot include an AutoGen node
+      \end{itemize}
+    \end{alertblock}
+
+    \begin{block}{\fontsize{5.5}{6.5}\selectfont Novel Contribution}
+      \fontsize{5.5}{6.5}\selectfont
+      A \textbf{declarative pipeline specification} (YAML/JSON) for AI agent
+      orchestration that:
+      \begin{enumerate}
+        \setlength{\itemsep}{0pt}
+        \item Defines agent nodes with \textbf{framework}, \textbf{model},
+              \textbf{role}, and \textbf{tool} declarations
+        \item Specifies DAG edges with \textbf{conditional routing},
+              \textbf{parallel fan-out/fan-in}, and \textbf{feedback loops}
+        \item Enforces \textbf{typed handoffs} via schema references validated
+              at pipeline load time
+        \item Supports \textbf{human-in-the-loop gates} as first-class DAG nodes
+        \item Is \textbf{portable}: same spec runs locally, in CI, or on
+              Kubernetes
+      \end{enumerate}
+    \end{block}
+
+    \column{0.48\textwidth}
+    \begin{center}
+      \begin{tikzpicture}[scale=0.55, transform shape,
+          pnode/.style={rectangle, draw, thick, rounded corners, text width=1.8cm,
+                       text centered, minimum height=1cm, font=\fontsize{5}{6}\selectfont\bfseries},
+          cond/.style={diamond, draw, thick, fill=orchorange!20, inner sep=3pt,
+                       font=\fontsize{5}{6}\selectfont\bfseries, aspect=2.5},
+          gate/.style={rectangle, draw, thick, rounded corners, fill=orchred!15,
+                       text width=1.8cm, text centered, minimum height=0.9cm,
+                       font=\fontsize{5}{6}\selectfont\bfseries},
+          arrow/.style={->, thick, >=stealth}]
+
+        \node[pnode, fill=orchblue!15] (a1) at (0,5) {\faIcon{robot}\\Analyst\\{\fontsize{4}{5}\selectfont CrewAI}};
+        \node[cond] (sev) at (3.5,5) {Route};
+        \node[pnode, fill=orchpurple!15] (a2) at (7,6.5) {\faIcon{robot}\\Threat Intel\\{\fontsize{4}{5}\selectfont LangGraph}};
+        \node[pnode, fill=orchgreen!15] (a3) at (7,3.5) {\faIcon{robot}\\Vuln Scan\\{\fontsize{4}{5}\selectfont LangGraph}};
+        \node[pnode, fill=orchorange!15] (a4) at (3.5,1.5) {\faIcon{robot}\\Code Gen\\{\fontsize{4}{5}\selectfont AutoGen}};
+        \node[gate] (hg) at (0,1.5) {\faIcon{user-check}\\Approval\\{\fontsize{4}{5}\selectfont builtin}};
+        \node[pnode, fill=orchblue!15] (a5) at (0,-0.5) {\faIcon{robot}\\Report\\{\fontsize{4}{5}\selectfont CrewAI}};
+
+        %% Arrows — connect to diamond edges, not through it
+        \draw[arrow] (a1) -- (sev);
+        \draw[arrow, orchred] (sev.north east) -- node[above left, font=\fontsize{4}{5}\selectfont] {HIGH} (a2.west);
+        \draw[arrow, orchgreen] (sev.south east) -- node[below left, font=\fontsize{4}{5}\selectfont] {LOW} (a3.west);
+        \draw[arrow] (a2.east) -- +(0.8,0) |- (a4.east);
+        \node[font=\fontsize{4}{5}\selectfont, orchblue, anchor=east] at ([xshift=0.6cm, yshift=0.5cm]a2.east |- a3.north) {EnrichedIncident};
+        \draw[arrow] (a3.south) |- (a4);
+        \draw[arrow] (a4) -- (hg);
+        \draw[arrow] (hg) -- (a5);
+
+        %% Typed handoff label — linked between Analyst and Route
+        \draw[orchblue, dashed, thick] (a1.south) -- ++(0,-0.3) node[below, font=\fontsize{4}{5}\selectfont, orchblue] {TriageResult} -- ++(0,-0.1);
+
+        %% Legend
+        \node[rectangle, draw, dashed, orchgray, rounded corners,
+              text width=7cm, font=\fontsize{5.5}{6.5}\selectfont, align=left,
+              fill=white] at (5,-0.5) {
+          \textbf{Declarative YAML features:}
+          agents (multi-framework) | DAG edges (conditional) |
+          typed handoffs (schema-validated) | human gates | fan-out/fan-in
+        };
+      \end{tikzpicture}
+    \end{center}
+
+    \vspace{-0.3cm}
+
+    \begin{exampleblock}{\fontsize{5.5}{6.5}\selectfont Differentiation from Prior Art}
+      \fontsize{5.5}{6.5}\selectfont
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item \textbf{vs.\ Tekton / Argo}: define task/container DAGs; no concept
+              of AI agent roles, model configs, or typed handoffs
+        \item \textbf{vs.\ CrewAI YAML}: framework-locked; cannot include nodes
+              from AutoGen or LangGraph
+        \item \textbf{vs.\ LangGraph StateGraph}: imperative Python; not
+              declarative, not portable, not version-controlled as YAML
+        \item \textbf{vs.\ AutoGen GroupChat}: code-defined; no DAG structure,
+              no conditional routing, no typed schemas
+      \end{itemize}
+    \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+%% ============================================================
+%% CANDIDATE 4: Agent Supply Chain Security
+%% ============================================================
+
+\begin{frame}{\fontsize{9}{11}\selectfont Patent Candidate 4: AI Agent Supply Chain Security Framework}
+  \vspace{-0.3cm}
+
+  \fontsize{5.5}{6.5}\selectfont
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{alertblock}{\fontsize{5.5}{6.5}\selectfont Problem (Prior Art)}
+      \fontsize{5.5}{6.5}\selectfont
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item Software supply chain security (Sigstore, SLSA, SBOM) exists for
+              \textbf{code and containers}, not for \textbf{AI agents}
+        \item AI agents introduce \textbf{novel attack surfaces} not covered by existing supply chain frameworks:\\
+          {\fontsize{5}{6}\selectfont
+          \textbullet\ Prompt injection via malicious system prompts\\
+          \textbullet\ Model drift from unversioned model updates\\
+          \textbullet\ Tool abuse from over-permissioned agent configs\\
+          \textbullet\ Data exfiltration through unauthorized API calls\\
+          \textbullet\ Dependency confusion in agent registries}
+        \item No standard defines what an \textbf{Agent SBOM} should contain
+        \item No trust policy framework gates which agents can run in production
+              based on model, tools, and provenance
+      \end{itemize}
+    \end{alertblock}
+    \vspace{-0.15cm}
+    \begin{block}{\fontsize{5.5}{6.5}\selectfont Novel Contribution}
+      \fontsize{5.5}{6.5}\selectfont
+      A supply chain security framework for AI agents comprising:
+      \begin{enumerate}
+        \setlength{\itemsep}{0pt}
+        \item \textbf{Agent SBOM}: enumerates model version, tools, dependencies,
+              prompt hashes, and adapter version
+        \item \textbf{Agent Signing}: Sigstore/cosign integration for
+              tamper-evident, keyless-signed agent packages
+        \item \textbf{Provenance Attestations}: SLSA-compliant build provenance
+              recording who built the agent, from which source, with which CI
+        \item \textbf{Trust Policies}: declarative rules gating deployment
+              (allowed registries, required signatures, model allow-lists,
+              tool sandboxing constraints)
+      \end{enumerate}
+    \end{block}
+
+    \column{0.48\textwidth}
+    \begin{center}
+      \begin{tikzpicture}[scale=0.52, transform shape,
+          sbox/.style={rectangle, draw, thick, rounded corners,
+                       text width=2.8cm, text centered, minimum height=1.8cm,
+                       font=\fontsize{7}{8}\selectfont\bfseries}]
+
+        \node[sbox, fill=orchblue!15] (sbom) at (0,4.2) {
+          \faIcon{list-alt}\\[2pt] Agent SBOM\\[2pt]
+          \normalfont\fontsize{5}{6}\selectfont
+          model: gpt-4o@0201\\
+          tools: [siem v1.2]\\
+          prompt: sha256:a3f...\\
+          adapter: crewai:1.4
+        };
+        \node[sbox, fill=orchgreen!15] (sign) at (4.5,4.2) {
+          \faIcon{lock}\\[2pt] Signing\\[2pt]
+          \normalfont\fontsize{5}{6}\selectfont
+          Sigstore cosign\\
+          Keyless via OIDC\\
+          Rekor transparency\\
+          Verify on pull
+        };
+        \node[sbox, fill=orchorange!15] (prov) at (0,1.5) {
+          \faIcon{certificate}\\[2pt] Provenance\\[2pt]
+          \normalfont\fontsize{5}{6}\selectfont
+          SLSA Level 3\\
+          Builder: GH Actions\\
+          Source: git@sha1\\
+          Reproducible build
+        };
+        \node[sbox, fill=orchpurple!15] (policy) at (4.5,1.5) {
+          \faIcon{shield-alt}\\[2pt] Trust Policy\\[2pt]
+          \normalfont\fontsize{5}{6}\selectfont
+          Allowed registries\\
+          Required sigs\\
+          Model allow-list\\
+          Tool sandbox rules
+        };
+
+        %% Flow
+        \draw[->, very thick, orchgray] (sbom) -- (sign);
+        \draw[->, very thick, orchgray] (sign) -- (policy);
+        \draw[->, very thick, orchgray] (sbom) -- (prov);
+        \draw[->, very thick, orchgray] (prov) -- (policy);
+
+        %% Gate
+        \node[rectangle, draw, very thick, rounded corners, fill=orchred!15,
+              text width=4cm, text centered, minimum height=0.7cm,
+              font=\fontsize{7}{8}\selectfont\bfseries] (gate) at (2.25,-0.8) {
+          \faIcon{check-circle}\ Deploy / \faIcon{times-circle}\ Reject
+        };
+        \draw[->, very thick, orchpurple] (policy.south) -- ++(0,-0.3) -| (gate);
+      \end{tikzpicture}
+    \end{center}
+
+    \begin{exampleblock}{\fontsize{5.5}{6.5}\selectfont Differentiation from Prior Art}
+      \fontsize{5.5}{6.5}\selectfont
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item \textbf{vs.\ Sigstore/SLSA}: designed for code/containers; no
+              concept of model versions, prompt hashes, or tool manifests
+        \item \textbf{vs.\ SPDX/CycloneDX SBOM}: enumerate software deps; do
+              not cover AI-specific artifacts (model, prompts, tools, adapter)
+        \item \textbf{vs.\ Kyverno/OPA}: enforce container policies; no
+              agent-specific rules (model allow-lists, tool sandboxing, prompt
+              integrity)
+        \item \textbf{Novel combination}: extends proven supply chain patterns
+              to the AI agent domain with agent-specific threat model
+      \end{itemize}
+    \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+%% ============================================================
+%% CANDIDATE 5: Cross-Framework State Management & Replay
+%% ============================================================
+
+\begin{frame}{\fontsize{8}{10}\selectfont Patent Candidate 5: Cross-Framework Agent State Management with Replay}
+  \vspace{-0.3cm}
+
+  \fontsize{5.5}{6.5}\selectfont
+  \begin{columns}[T]
+    \column{0.44\textwidth}
+    \begin{alertblock}{\fontsize{5}{6}\selectfont Problem (Prior Art)}
+      \fontsize{5}{6}\selectfont
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item Each agent framework manages state \textbf{independently} and \textbf{incompatibly}:\\
+          {\fontsize{4.5}{5.5}\selectfont
+          \textbullet\ LangGraph: \texttt{StateGraph} with typed state channels\\
+          \textbullet\ AutoGen: chat history as implicit state\\
+          \textbullet\ CrewAI: task context passed between crew members}
+        \item No mechanism exists to \textbf{checkpoint} the state of a
+              multi-framework pipeline at inter-agent boundaries
+        \item If a pipeline fails mid-execution, there is no way to
+              \textbf{replay from a checkpoint} across different frameworks
+        \item Debugging multi-agent pipelines requires reproducing the
+              \textbf{entire execution}, not just the failed step
+        \item Compliance and audit requirements demand \textbf{deterministic
+              replay} of agent decision chains
+      \end{itemize}
+    \end{alertblock}
+    \vspace{-0.2cm}
+    \begin{block}{\fontsize{5}{6}\selectfont Novel Contribution}
+      \fontsize{5}{6}\selectfont
+      A \textbf{cross-framework state management protocol} that:
+      \begin{enumerate}
+        \setlength{\itemsep}{0pt}
+        \item Defines a \textbf{universal checkpoint format} capturing the typed
+              handoff payload, agent config, and execution metadata at each
+              DAG edge
+        \item Stores checkpoints in a \textbf{pluggable state backend}
+              (Redis, PostgreSQL, S3) independent of any framework
+        \item Enables \textbf{replay from any checkpoint}: re-execute the
+              pipeline from a specific node with the exact same inputs
+        \item Supports \textbf{time-travel debugging}: inspect the state at
+              any point in a past execution
+        \item Provides \textbf{audit trail}: immutable log of all state
+              transitions with timestamps and agent identifiers
+      \end{enumerate}
+    \end{block}
+
+    \column{0.52\textwidth}
+    \vspace{0.3cm}
+    \begin{tikzpicture}[scale=0.55, transform shape,
+          agnode/.style={rectangle, draw, thick, rounded corners, fill=orchblue!10,
+                        text width=1.8cm, text centered, minimum height=0.9cm,
+                        font=\fontsize{6}{7}\selectfont\bfseries},
+          ckpt/.style={circle, draw, very thick, fill=orchorange!30,
+                       minimum size=0.7cm, font=\fontsize{5.5}{6.5}\selectfont\bfseries},
+          store/.style={rectangle, draw, thick, rounded corners, fill=orchgreen!15,
+                        text width=5.5cm, text centered, minimum height=0.8cm,
+                        font=\fontsize{6}{7}\selectfont\bfseries},
+          arrow/.style={->, thick, >=stealth}]
+
+        %% Pipeline
+        \node[agnode] (n1) at (-2,5) {Analyst\\{\fontsize{5}{6}\selectfont CrewAI}};
+        \node[ckpt] (c1) at (0.2,5) {cp1};
+        \node[agnode] (n2) at (2.4,5) {Enricher\\{\fontsize{5}{6}\selectfont LangGraph}};
+        \node[ckpt] (c2) at (4.6,5) {cp2};
+        \node[agnode] (n3) at (6.8,5) {Coder\\{\fontsize{5}{6}\selectfont AutoGen}};
+
+        \draw[arrow] (n1) -- (c1);
+        \draw[arrow] (c1) -- (n2);
+        \draw[arrow] (n2) -- (c2);
+        \draw[arrow] (c2) -- (n3);
+
+        %% State store
+        \node[store] (ss) at (2.4,3) {\faDatabase\ State Backend (Redis / S3 / PG)};
+        \draw[arrow, orchorange, dashed] (c1) -- node[right, font=\fontsize{5}{6}\selectfont] {save} (c1 |- ss.north);
+        \draw[arrow, orchorange, dashed] (c2) -- node[right, font=\fontsize{5}{6}\selectfont] {save} (c2 |- ss.north);
+
+        %% Replay
+        \node[rectangle, draw, dashed, orchpurple, thick, rounded corners,
+              text width=6cm, minimum height=1.2cm, font=\fontsize{6.5}{7.5}\selectfont,
+              align=left, fill=white, inner sep=3pt] at (2.4,1) {
+          \textbf{Replay from cp2:}\\
+          \texttt{o9ectl replay --run run-8c4d --from cp2}\\[1pt]
+          \textbf{Time-travel inspect:}\\
+          \texttt{o9ectl inspect --run run-8c4d --at cp1}\\[1pt]
+          \textbf{Audit trail:}\\
+          \texttt{o9ectl audit --run run-8c4d --format json}
+        };
+      \end{tikzpicture}
+
+    \begin{exampleblock}{\fontsize{5.5}{6.5}\selectfont Differentiation from Prior Art}
+      \fontsize{5.5}{6.5}\selectfont
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item \textbf{vs.\ LangGraph checkpointing}: framework-specific; cannot
+              checkpoint across framework boundaries (e.g., CrewAI $\rightarrow$
+              AutoGen)
+        \item \textbf{vs.\ Temporal.io}: replays \textbf{code workflows};
+              no concept of AI agent handoffs, typed payloads, or model
+              execution metadata
+        \item \textbf{vs.\ MLflow experiment tracking}: tracks model
+              \textbf{training} runs; does not checkpoint multi-agent
+              \textbf{inference} pipelines
+        \item \textbf{Novel}: cross-framework checkpoint/replay with
+              typed handoff serialization and audit trail
+      \end{itemize}
+    \end{exampleblock}
+  \end{columns}
+\end{frame}

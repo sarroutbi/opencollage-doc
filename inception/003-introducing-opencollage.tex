@@ -1,0 +1,52 @@
+\section{Introducing OpenCollage}
+
+\begin{frame}{OpenCollage: The Universal Orchestration Layer}
+  \scriptsize
+  \begin{block}{Core Message}
+    \scriptsize
+    OpenCollage is not another agent framework---it is the open orchestration
+    standard that sits \textbf{above} frameworks, enabling heterogeneous agents
+    to collaborate through shared definitions, protocols, and telemetry.
+  \end{block}
+
+  \vspace{0.2cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.65, transform shape,
+        layer/.style={rectangle, draw, thick, rounded corners, text centered, minimum height=1cm, font=\scriptsize\bfseries},
+        fw/.style={layer, fill=orchblue!15, text width=2cm},
+        orch/.style={layer, fill=orchgreen!20, text width=10cm, minimum height=1.2cm}]
+
+      % Framework layer
+      \node[fw] (ag) at (0,0) {AutoGen};
+      \node[fw] (cr) at (2.8,0) {CrewAI};
+      \node[fw] (lg) at (5.6,0) {LangGraph};
+      \node[fw] (cu) at (8.4,0) {Custom};
+
+      % OpenCollage layer
+      \node[orch] (oc) at (4.2,1.8) {\faIcon{layer-group}\ \ OpenCollage Orchestration Layer};
+
+      % Outputs layer
+      \node[layer, fill=orchpurple!15, text width=2.2cm] (sw) at (0,3.6) {Software};
+      \node[layer, fill=orchpurple!15, text width=2.2cm] (doc) at (3.5,3.6) {Documents};
+      \node[layer, fill=orchpurple!15, text width=2.2cm] (dp) at (7,3.6) {Data Pipelines};
+
+      % Arrows
+      \draw[->, thick, orchblue] (ag) -- (ag |- oc.south);
+      \draw[->, thick, orchblue] (cr) -- (cr |- oc.south);
+      \draw[->, thick, orchblue] (lg) -- (lg |- oc.south);
+      \draw[->, thick, orchblue] (cu) -- (cu |- oc.south);
+      \draw[->, thick, orchgreen] (oc.north -| sw) -- (sw);
+      \draw[->, thick, orchgreen] (oc.north -| doc) -- (doc);
+      \draw[->, thick, orchgreen] (oc.north -| dp) -- (dp);
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.1cm}
+
+  \begin{itemize}
+    \item \textbf{Open definitions}: YAML/JSON pipeline specs---version-controlled, portable, auditable
+    \item \textbf{Framework-agnostic}: Agents from any SDK participate as first-class citizens
+    \item \textbf{Observable by default}: Native OpenTelemetry integration for every orchestration step
+  \end{itemize}
+\end{frame}

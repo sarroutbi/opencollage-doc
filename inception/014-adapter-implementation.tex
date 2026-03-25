@@ -1,0 +1,168 @@
+\begin{frame}[fragile]{Adapter Implementation: AutoGen Example}
+  \vspace{0.1cm}
+  \fontsize{5.5}{6.5}\selectfont
+  \begin{block}{}
+    \fontsize{5.5}{6.5}\selectfont
+    A framework adapter wraps a native agent to conform to the three-method
+    OpenCollage contract. Below is a production-grade AutoGen adapter.
+  \end{block}
+
+  \vspace{-0.1cm}
+
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{lstlisting}[style=pythonstyle,basicstyle=\ttfamily\fontsize{3.3}{4}\selectfont,title={\tiny\bfseries opencollage/adapters/autogen\_adapter.py}]
+from opencollage.sdk import (
+    AdapterBase, AgentConfig, HandoffPayload,
+    ExecutionResult, Checkpoint, SchemaRegistry
+)
+from opencollage.telemetry import OTelEmitter
+from autogen import AssistantAgent, UserProxyAgent
+from opentelemetry import trace
+
+tracer = trace.get_tracer("opencollage.autogen")
+
+class AutoGenAdapter(AdapterBase):
+
+    def initialize(
+        self, config: AgentConfig
+    ) -> None:
+        self._schema_reg = SchemaRegistry(
+            config.schema_registry_url
+        )
+        self._agent = AssistantAgent(
+            name=config.agent_id,
+            model=config.model,
+            system_message=config.system_prompt,
+        )
+        self._proxy = UserProxyAgent(
+            name=f"{config.agent_id}_exec",
+            code_execution_config={
+                "executor": config.code_execution
+                    .executor,
+                "sandbox": config.code_execution
+                    .sandbox,
+            },
+            human_input_mode="NEVER",
+        )
+        self._output_schema = (
+            self._schema_reg.resolve(
+                config.output_schema_ref
+            )
+        )
+      \end{lstlisting}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{lstlisting}[style=pythonstyle,basicstyle=\ttfamily\fontsize{3.3}{4}\selectfont,title={\tiny\bfseries execute() and emit\_telemetry()}]
+    async def execute(self,
+        input: HandoffPayload,
+        checkpoint: Checkpoint,
+    ) -> ExecutionResult:
+        with tracer.start_as_current_span(
+            f"agent.{self._agent.name}"
+        ) as span:
+            span.set_attribute("o9e.pipeline_run_id",
+                checkpoint.pipeline_run_id)
+            chat = await self._proxy.a_initiate_chat(
+                self._agent,
+                message=input.to_prompt(),
+                max_turns=5,
+            )
+            output = self._extract_output(
+                chat.chat_history)
+            self._output_schema.validate(output)
+            self.emit_telemetry(span, chat)
+            return ExecutionResult(
+                payload=HandoffPayload(output),
+                tokens_used=chat.cost,
+                tool_calls=chat.tool_calls,
+            )
+
+    def emit_telemetry(self, span, chat):
+        span.set_attribute("llm.token.prompt",
+            chat.cost["prompt_tokens"])
+        span.set_attribute("llm.token.completion",
+            chat.cost["completion_tokens"])
+        for tc in chat.tool_calls:
+            span.add_event("tool_call",
+                {"tool": tc.name,
+                 "duration_ms": tc.duration})
+      \end{lstlisting}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Adapter Contract: The Three-Method Interface}
+  \scriptsize
+  \begin{center}
+    \begin{tikzpicture}[scale=0.6, transform shape,
+        method/.style={rectangle, draw, thick, rounded corners, fill=orchgreen!15,
+                       text width=3.2cm, text centered, minimum height=1.8cm, font=\tiny\bfseries},
+        runtime/.style={rectangle, draw, very thick, rounded corners, fill=orchblue!10,
+                        text width=11cm, text centered, minimum height=0.8cm, font=\scriptsize\bfseries}]
+
+      \node[runtime] (rt) at (5,3) {\faCogs\ \ OpenCollage Runtime};
+
+      \node[method] (m1) at (0,0) {
+        \texttt{initialize(config)}\\[4pt]
+        \normalfont\tiny
+        Parse AgentConfig YAML\\
+        Bootstrap framework agent\\
+        Connect to schema registry\\
+        Return: \texttt{void}
+      };
+      \node[method] (m2) at (5,0) {
+        \texttt{execute(input, ckpt)}\\[4pt]
+        \normalfont\tiny
+        Receive typed HandoffPayload\\
+        Run native agent logic\\
+        Validate output vs schema\\
+        Return: \texttt{ExecutionResult}
+      };
+      \node[method] (m3) at (10,0) {
+        \texttt{emit\_telemetry(span)}\\[4pt]
+        \normalfont\tiny
+        Report tokens, latency, cost\\
+        Record tool call events\\
+        Propagate trace context\\
+        Return: \texttt{void}
+      };
+
+      \draw[->, thick, orchblue] (rt.south -| m1) -- (m1);
+      \draw[->, thick, orchblue] (rt.south) -- (m2);
+      \draw[->, thick, orchblue] (rt.south -| m3) -- (m3);
+
+      \node[font=\tiny\bfseries, orchgray] at (5,-1.6) {
+        Every adapter---AutoGen, CrewAI, LangGraph, custom---implements exactly these three methods.
+      };
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.1cm}
+
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{\scriptsize Lifecycle Guarantees}
+        \fontsize{5.5}{6.5}\selectfont
+        \begin{enumerate}
+          \setlength{\itemsep}{0pt}
+          \item \texttt{initialize} called exactly once at pipeline startup
+          \item \texttt{execute} may be called multiple times (retries)
+          \item \texttt{emit\_telemetry} called within \texttt{execute}'s span context
+          \item Adapter is stateless between \texttt{execute} calls---state lives in checkpoints
+        \end{enumerate}
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{\scriptsize Conformance Testing}
+        \fontsize{5.5}{6.5}\selectfont
+        \begin{itemize}
+          \setlength{\itemsep}{0pt}
+          \item \texttt{o9e conformance test autogen-adapter}
+          \item Validates: schema compliance, telemetry emission, error propagation, idempotent retries
+          \item Adapters must pass conformance to be listed in the OpenCollage registry
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}

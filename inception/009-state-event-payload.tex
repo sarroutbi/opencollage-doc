@@ -1,0 +1,82 @@
+\begin{frame}[fragile]{State Snapshots: The Checkpoint Payload}
+  \vspace{-0.2cm}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{lstlisting}[style=jsonstyle,basicstyle=\ttfamily\fontsize{4}{4.8}\selectfont,title={\tiny\bfseries State Checkpoint (after alert-triage)}]
+{
+  "checkpoint_id": "cp-a7f3e2b1-0042",
+  "pipeline_run_id": "run-8c4d1e9a",
+  "pipeline_name": "security-incident-response",
+  "node_id": "alert-triage",
+  "version": 1,
+  "timestamp": "2026-03-23T14:32:07.891Z",
+  "status": "completed",
+  "state": {
+    "inputs": {
+      "raw_alert": {
+        "source": "crowdstrike",
+        "rule_id": "CS-2026-0471",
+        "timestamp": "2026-03-23T14:31:58Z"
+      }
+    },
+    "outputs": {
+      "alert_id": "f47ac10b-58cc-4372-a567",
+      "severity": "CRITICAL",
+      "summary": "Lateral movement detected
+        via compromised service account
+        svc-deploy on prod-k8s-node-07",
+      "affected_assets": [
+        {
+          "hostname": "prod-k8s-node-07",
+          "ip": "10.4.12.37",
+          "criticality": "tier-1"
+        }
+      ]
+    }
+  },
+      \end{lstlisting}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{lstlisting}[style=jsonstyle,basicstyle=\ttfamily\fontsize{4}{4.8}\selectfont,title={\tiny\bfseries State Checkpoint (cont.)}]
+  "execution_metadata": {
+    "agent_framework": "crewai",
+    "model": "gpt-4o",
+    "tokens_used": {
+      "prompt": 1847,
+      "completion": 623,
+      "total": 2470
+    },
+    "latency_ms": 3421,
+    "tool_calls": [
+      {
+        "tool": "siem_query",
+        "duration_ms": 892,
+        "result_size_bytes": 14200
+      },
+      {
+        "tool": "asset_lookup",
+        "duration_ms": 124
+      }
+    ]
+  },
+  "parent_checkpoint": null,
+  "schema_ref":
+    "opencollage/schemas/TriageResult@1.2.0",
+  "checksum": "sha256:e3b0c44298fc..."
+}
+      \end{lstlisting}
+
+      \vspace{0.1cm}
+
+      \fontsize{5}{6}\selectfont
+      \textbf{\faIcon{key}\ \ Invariants:}
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item Every checkpoint is \textbf{immutable} and content-addressed
+        \item \texttt{checksum} enables tamper detection across replays
+        \item \texttt{schema\_ref} pins the exact output schema version
+        \item \texttt{parent\_checkpoint} forms a linked chain for DAG replay
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}

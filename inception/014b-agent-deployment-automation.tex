@@ -1,0 +1,173 @@
+\section{Agent Deployment Automation}
+
+\begin{frame}{\fontsize{10}{12}\selectfont GitOps for Agent Pipelines}
+  \vspace{-0.2cm}
+  \begin{block}{\scriptsize Core Message}
+    \scriptsize
+    Agent pipelines are code. They should be version-controlled, reviewed,
+    tested in CI, and deployed through GitOps---the same way we deploy
+    infrastructure and applications today.
+  \end{block}
+
+  \vspace{-0.1cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.58, transform shape,
+        stage/.style={rectangle, draw, thick, rounded corners, text width=2.2cm,
+                     text centered, minimum height=1.6cm, font=\tiny\bfseries},
+        arrow/.style={->, thick, >=stealth}]
+
+      % Git
+      \node[stage, fill=orchblue!15] (git) at (0,0) {
+        \faIcon{code-branch}\\[2pt] Git Repo\\[2pt]
+        \normalfont\tiny pipeline.yaml\\agent-manifest.yaml\\schemas/
+      };
+
+      % CI
+      \node[stage, fill=orchorange!15] (ci) at (3.5,0) {
+        \faIcon{sync-alt}\\[2pt] CI Pipeline\\[2pt]
+        \normalfont\tiny Lint \& validate\\Conformance tests\\Dry-run execution
+      };
+
+      % Registry
+      \node[stage, fill=orchgreen!15] (reg) at (7,0) {
+        \faIcon{database}\\[2pt] Agent Registry\\[2pt]
+        \normalfont\tiny Push agents\\Sign artifacts\\Generate SBOM
+      };
+
+      % Deploy
+      \node[stage, fill=orchpurple!15] (deploy) at (10.5,0) {
+        \faIcon{rocket}\\[2pt] Deploy\\[2pt]
+        \normalfont\tiny o9ectl apply\\K8s Operator\\Canary rollout
+      };
+
+      % Monitor
+      \node[stage, fill=orchred!15] (mon) at (14,0) {
+        \faIcon{chart-line}\\[2pt] Monitor\\[2pt]
+        \normalfont\tiny OTel traces\\Cost tracking\\Drift detection
+      };
+
+      % Arrows
+      \draw[arrow] (git) -- node[above, font=\tiny] {push} (ci);
+      \draw[arrow] (ci) -- node[above, font=\tiny] {pass} (reg);
+      \draw[arrow] (reg) -- node[above, font=\tiny] {promote} (deploy);
+      \draw[arrow] (deploy) -- node[above, font=\tiny] {emit} (mon);
+
+      % Feedback loop
+      \draw[arrow, orchred, dashed] (mon.south) -- ++(0,-1) -| node[below, font=\tiny\bfseries, pos=0.25] {alert / rollback} (git.south);
+
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{-0.1cm}
+
+  \fontsize{6}{7}\selectfont
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{block}{\fontsize{6}{7}\selectfont CI Validation Steps}
+      \fontsize{5.5}{6.5}\selectfont
+      \begin{enumerate}
+        \setlength{\itemsep}{0pt}
+        \item \textbf{Schema validation}: pipeline YAML conforms to spec
+        \item \textbf{Agent resolution}: all referenced agents exist in registry
+        \item \textbf{Conformance check}: adapters pass the test suite
+        \item \textbf{Dry-run}: execute pipeline with mock inputs
+        \item \textbf{Cost estimation}: predict token usage before production
+      \end{enumerate}
+    \end{block}
+
+    \column{0.48\textwidth}
+    \begin{exampleblock}{\fontsize{6}{7}\selectfont Why This Matters}
+      \fontsize{5.5}{6.5}\selectfont
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item \textbf{Reproducibility}: same pipeline YAML = same behavior
+        \item \textbf{Auditability}: every change is a commit with review
+        \item \textbf{Rollback}: \texttt{git revert} undoes a bad agent deployment
+        \item \textbf{Compliance}: automated policy gates before production
+        \item \textbf{Velocity}: deploy agent updates as fast as code
+      \end{itemize}
+    \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{\fontsize{10}{12}\selectfont Agent Supply Chain Security}
+  \vspace{-0.2cm}
+  \begin{alertblock}{\scriptsize Core Message}
+    \scriptsize
+    AI agents execute code, access APIs, and handle sensitive data. Without supply
+    chain controls, a compromised or misconfigured agent is an attack vector.
+    OpenCollage applies \textbf{software supply chain best practices} to agents.
+  \end{alertblock}
+
+  \vspace{-0.1cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.6, transform shape,
+        sbox/.style={rectangle, draw, thick, rounded corners,
+                     text width=2.6cm, text centered, minimum height=2cm, font=\tiny\bfseries}]
+
+      \node[sbox, fill=orchblue!15] (sbom) at (0,0) {
+        \faIcon{list-alt}\ \textbf{Agent SBOM}\\[4pt]
+        \normalfont\tiny Which model version?\\
+        Which tools \& versions?\\
+        Which dependencies?\\
+        Which prompts?
+      };
+      \node[sbox, fill=orchgreen!15] (sign) at (3.8,0) {
+        \faIcon{lock}\ \textbf{Signing}\\[4pt]
+        \normalfont\tiny Sigstore integration\\
+        Keyless signing via OIDC\\
+        Tamper-evident packages\\
+        Verify before deploy
+      };
+      \node[sbox, fill=orchorange!15] (prov) at (7.6,0) {
+        \faIcon{certificate}\ \textbf{Provenance}\\[4pt]
+        \normalfont\tiny SLSA attestations\\
+        Build reproducibility\\
+        Who built this agent?\\
+        From which source?
+      };
+      \node[sbox, fill=orchpurple!15] (policy) at (11.4,0) {
+        \faIcon{shield-alt}\ \textbf{Trust Policies}\\[4pt]
+        \normalfont\tiny Allowed registries\\
+        Required signatures\\
+        Model allow-lists\\
+        Tool sandboxing rules
+      };
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.1cm}
+
+  \fontsize{6}{7}\selectfont
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{block}{\fontsize{6}{7}\selectfont The Container Parallel}
+      \fontsize{5.5}{6.5}\selectfont
+      \begin{tabular}{ll}
+        \textbf{Containers} & \textbf{Agents} \\
+        Docker Hub / Quay.io & o9e Agent Registry \\
+        Dockerfile & Agent Manifest \\
+        OCI Image Spec & o9e Package Spec \\
+        cosign / Sigstore & cosign for agents \\
+        Syft / Grype (SBOM) & Agent SBOM \\
+        SLSA provenance & Agent attestations \\
+        Kyverno / OPA & o9e Trust Policies \\
+      \end{tabular}
+    \end{block}
+
+    \column{0.48\textwidth}
+    \begin{alertblock}{\fontsize{6}{7}\selectfont Agent-Specific Threats}
+      \fontsize{5.5}{6.5}\selectfont
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item \textbf{Prompt injection}: malicious system prompts in untrusted agents
+        \item \textbf{Tool abuse}: agents with over-permissioned tool access
+        \item \textbf{Model drift}: unversioned model updates change behavior silently
+        \item \textbf{Data exfiltration}: agents sending context to unauthorized endpoints
+        \item \textbf{Dependency confusion}: typosquatting in agent registries
+      \end{itemize}
+    \end{alertblock}
+  \end{columns}
+\end{frame}

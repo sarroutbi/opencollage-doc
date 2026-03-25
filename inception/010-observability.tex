@@ -1,0 +1,50 @@
+\section{Observability}
+
+\begin{frame}{Native Observability with OpenTelemetry}
+  \begin{block}{Core Message}
+    \fontsize{6}{7}\selectfont
+    Every agent invocation, handoff, and state transition emits structured
+    telemetry---traces, metrics, and logs---through the OpenTelemetry standard,
+    enabling end-to-end pipeline visibility.
+  \end{block}
+
+  \vspace{-0.1cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.62, transform shape,
+        comp/.style={rectangle, draw, thick, rounded corners,
+                     text width=2.4cm, text centered, minimum height=1.2cm, font=\tiny\bfseries},
+        collector/.style={rectangle, draw, very thick, rounded corners, fill=orchorange!20,
+                          text width=8cm, text centered, minimum height=0.9cm, font=\scriptsize\bfseries}]
+
+      % Agent layer
+      \node[comp, fill=orchblue!15] (a1) at (0,0) {\faIcon{robot}\ Agent A\\{\normalfont\tiny spans + metrics}};
+      \node[comp, fill=orchblue!15] (a2) at (3.5,0) {\faIcon{robot}\ Agent B\\{\normalfont\tiny spans + metrics}};
+      \node[comp, fill=orchblue!15] (a3) at (7,0) {\faIcon{robot}\ Agent C\\{\normalfont\tiny spans + metrics}};
+
+      % OTel Collector
+      \node[collector] (otel) at (3.5,-1.8) {\faIcon{layer-group}\ OpenTelemetry Collector};
+
+      % Backends
+      \node[comp, fill=orchgreen!15] (jaeger) at (0,-3.6) {\faIcon{project-diagram}\ Jaeger\\{\normalfont\tiny Traces}};
+      \node[comp, fill=orchpurple!15] (prom) at (3.5,-3.6) {\faIcon{chart-line}\ Prometheus\\{\normalfont\tiny Metrics}};
+      \node[comp, fill=orchgray!15] (graf) at (7,-3.6) {\faIcon{tachometer-alt}\ Grafana\\{\normalfont\tiny Dashboards}};
+
+      % Connections
+      \draw[->, thick, orchorange] (a1) -- (a1 |- otel.north);
+      \draw[->, thick, orchorange] (a2) -- (a2 |- otel.north);
+      \draw[->, thick, orchorange] (a3) -- (a3 |- otel.north);
+      \draw[->, thick, orchgreen] (otel.south -| jaeger) -- (jaeger);
+      \draw[->, thick, orchpurple] (otel.south) -- (prom);
+      \draw[->, thick, orchgray] (otel.south -| graf) -- (graf);
+    \end{tikzpicture}
+  \end{center}
+  \vspace{-0.2cm}
+  \scriptsize
+  \begin{itemize}
+    \item \textbf{Distributed traces}: Follow a task from user prompt through every agent in the DAG
+    \item \textbf{Token \& cost metrics}: Per-agent, per-pipeline LLM cost attribution
+    \item \textbf{Latency \& error budgets}: SLO-driven alerting on pipeline performance
+    \item \textbf{Vendor-neutral}: Export to Jaeger, Datadog, Splunk, or any OTLP-compatible backend
+  \end{itemize}
+\end{frame}

@@ -1,0 +1,75 @@
+\section{Communication Protocols}
+
+\begin{frame}{Standardized Agent Communication}
+  \vspace{-0.3cm}
+  \scriptsize
+  \begin{block}{Core Message}
+    \scriptsize
+    OpenCollage defines a typed, event-driven communication protocol with a
+    schema registry, enabling agents from different frameworks to exchange
+    structured messages without custom adapters.
+  \end{block}
+
+  \vspace{-0.1cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.65, transform shape,
+        agent/.style={rectangle, draw, thick, rounded corners, fill=orchblue!15,
+                      text width=1.6cm, text centered, minimum height=1.2cm, font=\tiny\bfseries},
+        bus/.style={rectangle, draw, very thick, rounded corners, fill=orchpurple!15,
+                    text width=11cm, text centered, minimum height=0.8cm, font=\scriptsize\bfseries},
+        reg/.style={rectangle, draw, thick, rounded corners, fill=orchorange!15,
+                    text width=2cm, text centered, minimum height=0.8cm, font=\tiny\bfseries}]
+
+      % Agents
+      \node[agent] (a1) at (0,1.8) {\faIcon{robot}\\CrewAI\\Agent};
+      \node[agent] (a2) at (3,1.8) {\faIcon{robot}\\AutoGen\\Agent};
+      \node[agent] (a3) at (6,1.8) {\faIcon{robot}\\LangGraph\\Agent};
+      \node[agent] (a4) at (9,1.8) {\faIcon{robot}\\Custom\\Agent};
+
+      % Event bus
+      \node[bus] (eb) at (4.5,0) {\faIcon{exchange-alt}\ \ Event Bus (typed messages)};
+
+      % Schema registry
+      \node[reg] (sr) at (4.5,-1.5) {\faBook\ Schema Registry};
+
+      % Connections
+      \draw[<->, thick, orchpurple] (a1) -- (a1 |- eb.north);
+      \draw[<->, thick, orchpurple] (a2) -- (a2 |- eb.north);
+      \draw[<->, thick, orchpurple] (a3) -- (a3 |- eb.north);
+      \draw[<->, thick, orchpurple] (a4) -- (a4 |- eb.north);
+      \draw[<->, thick, orchorange] (eb) -- (sr);
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{-0.2cm}
+
+  \fontsize{6}{7}\selectfont
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{\faEnvelope\ \ Message Contract:}
+      \begin{itemize}
+        \item Typed payloads with JSON Schema validation
+        \item Versioned schemas in a central registry
+        \item Backward-compatible evolution rules
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{\faBolt\ \ Transport Modes:}
+      \begin{itemize}
+        \item Synchronous request/response
+        \item Async event-driven (pub/sub)
+        \item Streaming for long-running agents
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+  \vspace{-0.1cm}
+
+  \begin{exampleblock}{}
+    \fontsize{6}{7}\selectfont
+    Messages use the \textbf{CloudEvents v1.0} envelope with OpenCollage extensions for
+    routing, schema references, and W3C Trace Context propagation---see the next slide
+    for the complete wire format.
+  \end{exampleblock}
+\end{frame}

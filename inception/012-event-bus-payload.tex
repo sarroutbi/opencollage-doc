@@ -1,0 +1,81 @@
+\begin{frame}[fragile]{Event Bus Message: The Wire Format}
+  \vspace{-0.2cm}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{lstlisting}[style=jsonstyle,basicstyle=\ttfamily\fontsize{4}{4.8}\selectfont,title={\tiny\bfseries OpenCollage Event (CloudEvents-compliant)}]
+{
+  "specversion": "1.0",
+  "type": "opencollage.handoff.v1",
+  "source": "/pipelines/security-incident
+    -response/run-8c4d1e9a",
+  "id": "evt-b2c9f4a1-7e3d-4f8a-91c2",
+  "time": "2026-03-23T14:32:07.893Z",
+  "datacontenttype": "application/json",
+
+  "opencollageextension": {
+    "pipeline_run_id": "run-8c4d1e9a",
+    "from_node": "alert-triage",
+    "to_nodes": [
+      "threat-intel",
+      "vuln-analysis"
+    ],
+    "routing": "parallel_fanout",
+    "schema_ref":
+      "opencollage/schemas/TriageResult@1.2.0",
+    "checkpoint_id": "cp-a7f3e2b1-0042",
+    "trace_context": {
+      "traceparent": "00-4bf92f3577b3-
+        4bf6a-01",
+      "tracestate": "o9e=run-8c4d1e9a"
+    },
+    "priority": "critical",
+    "ttl_seconds": 300
+  },
+      \end{lstlisting}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{lstlisting}[style=jsonstyle,basicstyle=\ttfamily\fontsize{4}{4.8}\selectfont,title={\tiny\bfseries Event Data Payload}]
+  "data": {
+    "alert_id": "f47ac10b-58cc-4372-a567",
+    "severity": "CRITICAL",
+    "summary": "Lateral movement detected
+      via compromised service account
+      svc-deploy on prod-k8s-node-07",
+    "affected_assets": [
+      {
+        "hostname": "prod-k8s-node-07",
+        "ip": "10.4.12.37",
+        "criticality": "tier-1"
+      }
+    ]
+  }
+}
+      \end{lstlisting}
+
+      \vspace{0.1cm}
+
+      \fontsize{5}{6}\selectfont
+      \textbf{\faIcon{layer-group}\ \ Design Decisions:}
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item Envelope is \textbf{CloudEvents v1.0}---interoperable with Knative, Azure Event Grid, and any CE-compliant broker
+        \item \texttt{trace\_context} propagates W3C Trace Context across the entire DAG
+        \item \texttt{schema\_ref} is validated by the schema registry \textbf{before} delivery
+        \item \texttt{routing} tells the bus whether to broadcast or unicast
+        \item \texttt{data} contains only the typed handoff payload---no framework internals leak
+      \end{itemize}
+
+      \vspace{0.1cm}
+
+      \fontsize{5}{6}\selectfont
+      \textbf{\faBolt\ \ Transport Bindings:}
+      \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item NATS JetStream (default)
+        \item Apache Kafka
+        \item Redis Streams
+        \item In-process channel (dev)
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}

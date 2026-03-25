@@ -1,0 +1,67 @@
+\section{Use Case: Security Incident Response}
+
+\begin{frame}{\fontsize{10}{12}\selectfont Real-World Use Case: Automated Security Incident Response}
+  \fontsize{6}{7}\selectfont
+  \begin{alertblock}{The Scenario}
+    \fontsize{6}{7}\selectfont
+    A SOC team needs an automated pipeline that triages security alerts, correlates
+    threat intelligence, generates remediation code, and produces executive reports---each
+    step demanding a \textbf{different agent specialization} from a \textbf{different framework}.
+  \end{alertblock}
+
+  \vspace{0.1cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.55, transform shape,
+        pstep/.style={rectangle, draw, thick, rounded corners, text width=2cm,
+                     text centered, minimum height=1.4cm, font=\tiny\bfseries},
+        cond/.style={diamond, draw, thick, fill=orchorange!20, inner sep=1pt,
+                     font=\tiny\bfseries, aspect=2.2},
+        arrow/.style={->, thick, >=stealth}]
+
+      % Pipeline steps
+      \node[pstep, fill=orchblue!15] (triage) at (0,0) {\faIcon{filter}\\Alert\\Triage\\{\normalfont\tiny CrewAI}};
+      \node[cond] (sev) at (3,0) {Severity?};
+      \node[pstep, fill=orchpurple!15] (threat) at (6,1.2) {\faIcon{shield-alt}\\Threat Intel\\Enrichment\\{\normalfont\tiny LangGraph}};
+      \node[pstep, fill=orchgreen!15] (vuln) at (6,-1.2) {\faIcon{search}\\Vuln\\Analysis\\{\normalfont\tiny LangGraph}};
+      \node[pstep, fill=orchred!15] (remed) at (9.5,0) {\faIcon{wrench}\\Remediation\\Code Gen\\{\normalfont\tiny AutoGen}};
+      \node[pstep, fill=orchorange!15] (report) at (13,0) {\faIcon{file-alt}\\Executive\\Report\\{\normalfont\tiny CrewAI}};
+
+      % Arrows
+      \draw[arrow] (triage) -- (sev);
+      \draw[arrow, orchred] (sev) -- node[above left, font=\tiny] {HIGH/CRIT} (threat);
+      \draw[arrow, orchgreen] (sev) -- node[below left, font=\tiny] {MED/LOW} (vuln);
+      \draw[arrow] (threat) -- (remed);
+      \draw[arrow] (vuln) -- (remed);
+      \draw[arrow] (remed) -- (report);
+
+      % Parallel indicator
+      \draw[dashed, orchgray, thick] (4.5,-2) rectangle (7.5,2.2);
+      \node[font=\tiny\bfseries, orchgray] at (6,2.5) {parallel fan-out};
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.1cm}
+
+  \fontsize{6}{7}\selectfont
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Why this needs OpenCollage:}
+      \begin{itemize}
+        \item CrewAI excels at role-based analysis and writing
+        \item AutoGen excels at code generation with tool use
+        \item LangGraph excels at stateful graph-based reasoning
+        \item No single framework covers all requirements
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Pipeline characteristics:}
+      \begin{itemize}
+        \item Conditional branching on alert severity
+        \item Parallel fan-out for threat intel + vuln analysis
+        \item Fan-in synchronization before code gen
+        \item End-to-end tracing across 4 frameworks
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}

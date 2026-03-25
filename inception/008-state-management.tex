@@ -1,0 +1,74 @@
+\section{State Management}
+
+\begin{frame}{Deterministic State for Agent Pipelines}
+  \fontsize{6}{7}\selectfont
+  \begin{block}{}
+    \fontsize{6}{7}\selectfont
+    OpenCollage provides a unified state layer with checkpointing, replay,
+    and recovery---making multi-agent workflows reproducible and debuggable.
+  \end{block}
+
+  \vspace{0.1cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.65, transform shape,
+        agstep/.style={rectangle, draw, thick, rounded corners, fill=orchblue!15,
+                     text width=1.8cm, text centered, minimum height=1cm, font=\tiny\bfseries},
+        state/.style={rectangle, draw, dashed, rounded corners, fill=orchgreen!10,
+                      text width=1.4cm, text centered, minimum height=0.7cm, font=\tiny},
+        store/.style={cylinder, draw, thick, fill=orchorange!15, shape border rotate=90,
+                      minimum height=1cm, minimum width=1.5cm, font=\tiny\bfseries}]
+
+      \node[agstep] (a1) at (0,0) {Agent A\\Executes};
+      \node[agstep] (a2) at (3.5,0) {Agent B\\Executes};
+      \node[agstep] (a3) at (7,0) {Agent C\\Executes};
+
+      \node[state] (s1) at (1.75,1.2) {State v1};
+      \node[state] (s2) at (5.25,1.2) {State v2};
+      \node[state] (s3) at (8.75,1.2) {State v3};
+
+      \node[store] (db) at (5.25,3) {State Store};
+
+      \draw[->, thick] (a1) -- (s1);
+      \draw[->, thick] (s1) -- (a2);
+      \draw[->, thick] (a2) -- (s2);
+      \draw[->, thick] (s2) -- (a3);
+      \draw[->, thick] (a3) -- (s3);
+
+      \draw[->, dashed, orchgreen] (s1) -- (db);
+      \draw[->, dashed, orchgreen] (s2) -- (db);
+      \draw[->, dashed, orchgreen] (s3) -- (db);
+
+      % Replay arrow with right-angle corners (avoids overlapping State v2)
+      \draw[->, thick, orchred] (db.east) -- ++(4.5,0) node[above left, font=\tiny\bfseries, orchred] {Replay} |- (a3.east);
+    \end{tikzpicture}
+  \end{center}
+
+  \fontsize{6}{7}\selectfont
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{\faIcon{history}\ \ Capabilities:}
+      \begin{itemize}
+        \item Immutable state snapshots at each DAG node
+        \item Checkpoint-based recovery on failure
+        \item Deterministic replay for debugging
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{\faPlug\ \ Storage Backends:}
+      \begin{itemize}
+        \item In-memory (development)
+        \item Redis / PostgreSQL (production)
+        \item S3-compatible (archival)
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+  \vspace{-0.1cm}
+
+  \begin{exampleblock}{}
+    \fontsize{6}{7}\selectfont
+    Each checkpoint is a content-addressed JSON document containing inputs, outputs,
+    execution metadata, and token costs---see the next slide for the full payload structure.
+  \end{exampleblock}
+\end{frame}

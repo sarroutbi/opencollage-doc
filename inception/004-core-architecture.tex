@@ -1,0 +1,69 @@
+\section{Core Architecture}
+
+\begin{frame}{Architecture: Four Pillars}
+  \begin{block}{Core Message}
+    \scriptsize
+    OpenCollage is built on four pillars: \textbf{Pipeline Definitions},
+    \textbf{State Management}, \textbf{Observability}, and
+    \textbf{Standardized Communication}---each designed as an open, extensible standard.
+  \end{block}
+
+  \vspace{0.2cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.62, transform shape,
+        pillar/.style={rectangle, draw, thick, rounded corners,
+                       text width=2.4cm, text centered, minimum height=2.8cm, font=\tiny\bfseries},
+        base/.style={rectangle, draw, thick, rounded corners, fill=orchgray!10,
+                     text width=11cm, text centered, minimum height=0.8cm, font=\scriptsize\bfseries}]
+
+      \node[pillar, fill=orchblue!15] (p1) at (0,0) {
+        \faIcon{project-diagram}\\[4pt]
+        Pipeline\\Definitions\\[4pt]
+        \normalfont\tiny YAML/JSON DAGs\\
+        Agent routing\\
+        Handoff specs
+      };
+      \node[pillar, fill=orchgreen!15] (p2) at (3.2,0) {
+        \faDatabase\\[4pt]
+        State\\Management\\[4pt]
+        \normalfont\tiny Deterministic state\\
+        Checkpointing\\
+        Replay \& recovery
+      };
+      \node[pillar, fill=orchorange!15] (p3) at (6.4,0) {
+        \faIcon{chart-bar}\\[4pt]
+        Observability\\[4pt]
+        \normalfont\tiny OpenTelemetry\\
+        Traces \& metrics\\
+        Cost attribution
+      };
+      \node[pillar, fill=orchpurple!15] (p4) at (9.6,0) {
+        \faIcon{exchange-alt}\\[4pt]
+        Communication\\Protocols\\[4pt]
+        \normalfont\tiny Typed messages\\
+        Event-driven bus\\
+        Schema registry
+      };
+
+      % Base
+      \node[base] (b) at (4.8,-2.4) {
+        \faPlug\ \ Framework Adapter Layer (AutoGen $\cdot$ CrewAI $\cdot$ LangGraph $\cdot$ Custom)
+      };
+
+      % Connections
+      \draw[->, thick, orchgray] (p1) -- (p1 |- b.north);
+      \draw[->, thick, orchgray] (p2) -- (p2 |- b.north);
+      \draw[->, thick, orchgray] (p3) -- (p3 |- b.north);
+      \draw[->, thick, orchgray] (p4) -- (p4 |- b.north);
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.1cm}
+
+  \begin{exampleblock}{Design Principle}
+    \scriptsize
+    Each pillar is independently adoptable. Teams can start with pipeline definitions
+    alone and incrementally adopt state management, observability, and communication protocols.
+  \end{exampleblock}
+\end{frame}

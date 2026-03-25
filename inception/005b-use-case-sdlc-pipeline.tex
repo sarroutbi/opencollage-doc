@@ -1,0 +1,72 @@
+\section{Use Case: AI-Driven Software Development}
+
+\begin{frame}{\fontsize{10}{12}\selectfont Real-World Use Case: AI-Driven Software Development Pipeline}
+  \fontsize{6}{7}\selectfont
+  \begin{alertblock}{The Scenario}
+    \fontsize{6}{7}\selectfont
+    A development team uses an AI agent pipeline that takes a feature request through
+    specification, architecture, implementation, testing, and release---each phase handled
+    by a \textbf{specialized agent} from the \textbf{best-suited framework}.
+  \end{alertblock}
+
+  \vspace{-0.1cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.52, transform shape,
+        pstep/.style={rectangle, draw, thick, rounded corners, text width=2cm,
+                     text centered, minimum height=1.4cm, font=\tiny\bfseries},
+        arrow/.style={->, thick, >=stealth}]
+
+      % Pipeline steps
+      \node[pstep, fill=orchblue!15] (po) at (0,0) {\faIcon{clipboard-list}\\Product\\Owner\\{\normalfont\tiny CrewAI}};
+      \node[pstep, fill=orchpurple!15] (arch) at (3.5,0) {\faIcon{drafting-compass}\\Technical\\Architect\\{\normalfont\tiny LangGraph}};
+      \node[pstep, fill=orchgreen!15] (dev) at (7.5,1.2) {\faIcon{code}\\Software\\Engineer\\{\normalfont\tiny AutoGen}};
+      \node[pstep, fill=orchorange!15] (test) at (7.5,-1.2) {\faIcon{vial}\\Test\\Engineer\\{\normalfont\tiny AutoGen}};
+      \node[pstep, fill=orchred!15] (rel) at (11.5,0) {\faIcon{rocket}\\Release\\Engineer\\{\normalfont\tiny CrewAI}};
+
+      % Arrows
+      \draw[arrow] (po) -- (arch);
+      \draw[arrow] (arch) -- (dev);
+      \draw[arrow] (arch) -- (test);
+      \draw[arrow] (dev) -- (rel);
+      \draw[arrow] (test) -- (rel);
+
+      % Feedback loop PO <-> Architect
+      \draw[arrow, orchpurple, dashed] (arch.north) -- ++(0,0.8) -| node[above, font=\tiny\bfseries, orchpurple, pos=0.25] {refinement loop} (po.north);
+
+      % Feedback loop Test -> Software Engineer (bug found)
+      \draw[arrow, orchorange, dashed] (test.north) -- node[right, font=\tiny\bfseries, orchorange] {bug found} (dev.south);
+
+      % Feedback loop Test -> Architect (requirement issue)
+      \draw[arrow, orchred, dashed] (test.south) -- ++(0,-0.8) -| node[below, font=\tiny\bfseries, orchred, pos=0.25] {requirement issue} (arch.south);
+
+      % Parallel indicator
+      \draw[dashed, orchgray, thick] (5.8,-2.5) rectangle (9.2,2.2);
+      \node[font=\tiny\bfseries, orchgray] at (7.5,2.5) {parallel fan-out};
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{-0.2cm}
+
+  \fontsize{6}{7}\selectfont
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Why this needs OpenCollage:}
+      \begin{itemize}
+        \item CrewAI excels at role-based personas (PO, Release)
+        \item LangGraph enables stateful iterative design refinement
+        \item AutoGen excels at sandboxed code generation and execution
+        \item No single framework spans the full SDLC
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Pipeline characteristics:}
+      \begin{itemize}
+        \item Feedback loops: PO$\leftrightarrow$Architect, Test$\rightarrow$Dev, Test$\rightarrow$Architect
+        \item Parallel fan-out for implementation + testing
+        \item Fan-in synchronization before release
+        \item End-to-end tracing across 3 frameworks
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}

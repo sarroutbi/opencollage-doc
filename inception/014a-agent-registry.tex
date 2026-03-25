@@ -1,0 +1,161 @@
+\section{Agent Registry \& Packaging}
+
+\begin{frame}{\fontsize{10}{12}\selectfont Agent Registry: The Container Registry Moment for AI Agents}
+  \vspace{-0.2cm}
+  \begin{block}{\scriptsize Core Message}
+    \scriptsize
+    Containers became ubiquitous when registries (Docker Hub, Quay.io) gave them
+    a standard packaging, versioning, and distribution model. AI agents need the
+    same infrastructure---an \textbf{Agent Registry} that makes agents discoverable,
+    versionable, and deployable with a single command.
+  \end{block}
+
+  \vspace{-0.1cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.58, transform shape]
+
+      %% ---- Section titles ----
+      \node[font=\fontsize{7}{8}\selectfont\bfseries, orchblue] at (3.5,7.2) {Container World};
+      \node[font=\fontsize{7}{8}\selectfont\bfseries, orchgreen!80!black] at (11.5,7.2) {Agent World (OpenCollage)};
+
+      %% ---- Divider ----
+      \draw[very thick, orchgray!30] (7.5,0) -- (7.5,6.8);
+      \node[font=\fontsize{8}{9}\selectfont\bfseries, orchgray, fill=white, inner sep=3pt] at (7.5,3.5) {\faIcon{equals}};
+
+      %% =============== CONTAINER SIDE ===============
+      \tikzset{
+        cbox/.style={rectangle, draw, thick, rounded corners=3pt, fill=orchblue!10,
+                     draw=orchblue!40, text width=2.8cm, minimum height=0.9cm,
+                     font=\fontsize{4.5}{5.5}\selectfont, text centered}
+      }
+
+      \node[cbox, font=\fontsize{4.5}{5.5}\selectfont\bfseries] (creg) at (3.5,6) {\faIcon{database}\ Quay.io / Docker Hub};
+      \node[cbox] (cimg) at (1.2,4.2) {\faIcon{cube}\ Container Image\\OCI format};
+      \node[cbox] (ctag) at (5.8,4.2) {\faIcon{tag}\ Tags \& Digests\\Versioning};
+      \node[cbox] (csig) at (1.2,2.4) {\faIcon{lock}\ Sigstore / cosign\\Image signing};
+      \node[cbox] (ccli) at (5.8,2.4) {\faIcon{terminal}\ \texttt{docker pull}\\Distribution};
+      \node[cbox] (csbom) at (3.5,0.6) {\faIcon{list-alt}\ SBOM\\Supply chain};
+
+      \draw[->, thick, orchblue!50] (creg) -- (cimg);
+      \draw[->, thick, orchblue!50] (creg) -- (ctag);
+      \draw[->, thick, orchblue!50] (cimg) -- (csig);
+      \draw[->, thick, orchblue!50] (ctag) -- (ccli);
+      \draw[->, thick, orchblue!50] (csig) -- (csbom);
+      \draw[->, thick, orchblue!50] (ccli) -- (csbom);
+
+      %% =============== AGENT SIDE ===============
+      \tikzset{
+        abox/.style={rectangle, draw, thick, rounded corners=3pt, fill=orchgreen!10,
+                     draw=orchgreen!40, text width=2.8cm, minimum height=0.9cm,
+                     font=\fontsize{4.5}{5.5}\selectfont, text centered}
+      }
+
+      \node[abox, font=\fontsize{4.5}{5.5}\selectfont\bfseries] (areg) at (11.5,6) {\faIcon{database}\ o9e Agent Registry};
+      \node[abox] (apkg) at (9.2,4.2) {\faIcon{robot}\ Agent Package\\Code + config + tools};
+      \node[abox] (aver) at (13.8,4.2) {\faIcon{tag}\ Semantic Versioning\\Conformance badge};
+      \node[abox] (asig) at (9.2,2.4) {\faIcon{lock}\ Signing \& Provenance\\Attestations};
+      \node[abox] (acli) at (13.8,2.4) {\faIcon{terminal}\ \texttt{o9ectl pull}\\Distribution};
+      \node[abox] (asbom) at (11.5,0.6) {\faIcon{list-alt}\ Agent SBOM\\Model + tools + deps};
+
+      \draw[->, thick, orchgreen!50] (areg) -- (apkg);
+      \draw[->, thick, orchgreen!50] (areg) -- (aver);
+      \draw[->, thick, orchgreen!50] (apkg) -- (asig);
+      \draw[->, thick, orchgreen!50] (aver) -- (acli);
+      \draw[->, thick, orchgreen!50] (asig) -- (asbom);
+      \draw[->, thick, orchgreen!50] (acli) -- (asbom);
+
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{\fontsize{10}{12}\selectfont Agent Manifest: The Dockerfile for AI Agents}
+  \vspace{-0.1cm}
+  \begin{block}{\scriptsize Core Message}
+    \scriptsize
+    Every agent is packaged with a declarative manifest that describes its identity,
+    capabilities, dependencies, and trust metadata---making agents reproducible,
+    auditable, and portable across environments.
+  \end{block}
+
+  \vspace{-0.5cm}
+
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \begin{lstlisting}[language=,basicstyle=\ttfamily\fontsize{4}{4.8}\selectfont,title={\tiny\bfseries agent-manifest.yaml}]
+apiVersion: opencollage/v1
+kind: AgentPackage
+metadata:
+  name: security-analyst
+  version: 2.1.0
+  author: acme-corp
+  license: Apache-2.0
+  registry: registry.opencollage.io
+
+spec:
+  framework: crewai
+  adapter: crewai-adapter:1.4.0
+
+  model:
+    provider: openai
+    name: gpt-4o
+    version: "2026-02-01"
+    temperature: 0.1
+
+  tools:
+    - name: siem_query
+      version: ">=1.0.0"
+    - name: asset_lookup
+      version: ">=2.3.0"
+
+  role: "Senior SOC Analyst"
+  system_prompt_ref: prompts/soc-analyst.md
+
+  resources:
+    max_tokens: 4096
+    timeout: 120s
+    max_tool_calls: 20
+      \end{lstlisting}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{lstlisting}[language=,basicstyle=\ttfamily\fontsize{4}{4.8}\selectfont,title={\tiny\bfseries agent-manifest.yaml (cont.)}]
+  dependencies:
+    python: ">=3.11"
+    packages:
+      - crewai>=0.30.0
+      - langchain-openai>=0.1.0
+    agents:  # compose with other agents
+      - registry.opencollage.io/
+          threat-intel:1.0.0
+      - registry.opencollage.io/
+          vuln-scanner:2.0.0
+
+  conformance:
+    passed: true
+    suite_version: 1.2.0
+    badge: gold
+
+  provenance:
+    signed_by: acme-corp-signing-key
+    signature_format: sigstore
+    sbom_format: spdx
+    attestations:
+      - type: build
+        builder: github-actions
+      - type: conformance
+        verifier: o9e-conformance-ci
+      \end{lstlisting}
+
+      \vspace{0.1cm}
+
+      \fontsize{5}{6}\selectfont
+      \textbf{\faIcon{terminal}\ \ Workflow:}
+      \begin{enumerate}
+        \setlength{\itemsep}{0pt}
+        \item \texttt{o9ectl build -f agent-manifest.yaml}
+        \item \texttt{o9ectl push security-analyst:2.1.0}
+        \item \texttt{o9ectl pull security-analyst:2.1.0}
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}

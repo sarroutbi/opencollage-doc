@@ -1,0 +1,59 @@
+\section{Open Pipeline Definitions}
+
+\begin{frame}[fragile]{\fontsize{10}{12}\selectfont Pipeline Definitions: Directed Acyclic Graphs (DAGs) as Code}
+  \begin{block}{Core Message}
+    \fontsize{6}{7}\selectfont
+    Agent pipelines are defined as declarative YAML/JSON DAGs---version-controlled,
+    validated, and portable across any execution environment.
+  \end{block}
+
+  \vspace{0.1cm}
+
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{lstlisting}[language=,basicstyle=\ttfamily\fontsize{5}{6}\selectfont,title={\tiny\bfseries opencollage-pipeline.yaml}]
+apiVersion: opencollage/v1
+kind: Pipeline
+metadata:
+  name: code-review-pipeline
+spec:
+  agents:
+    - id: analyst
+      framework: crewai
+      role: "Code Analyst"
+    - id: reviewer
+      framework: autogen
+      role: "Security Reviewer"
+    - id: reporter
+      framework: langgraph
+      role: "Report Generator"
+  dag:
+    analyst -> reviewer -> reporter
+  handoffs:
+    - from: analyst
+      to: reviewer
+      schema: CodeAnalysisResult
+      \end{lstlisting}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \fontsize{6}{7}\selectfont
+      \textbf{\faCheck\ \ Key Properties:}
+      \begin{itemize}
+        \item \textbf{Declarative}: Define \emph{what}, not \emph{how}
+        \item \textbf{Typed handoffs}: Schema-validated data between agents
+        \item \textbf{DAG execution}: Deterministic ordering with parallel branches
+        \item \textbf{Portable}: Same spec runs locally, in CI, or on Kubernetes
+      \end{itemize}
+
+      \vspace{0.3cm}
+
+      \textbf{\faCogs\ \ Execution Modes:}
+      \begin{itemize}
+        \item Sequential chains
+        \item Parallel fan-out / fan-in
+        \item Conditional branching
+        \item Human-in-the-loop gates
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}

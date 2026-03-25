@@ -1,0 +1,148 @@
+\begin{frame}{\fontsize{10}{12}\selectfont The Kubernetes Moment: From Containers to Agents}
+  \vspace{-0.4cm}
+  \begin{center}
+    \begin{tikzpicture}[scale=0.65, transform shape]
+
+      %% ---- Section titles ----
+      \node[font=\fontsize{7}{8}\selectfont\bfseries, orchblue] at (3.5,9.8) {Kubernetes (Containers)};
+      \node[font=\fontsize{7}{8}\selectfont\bfseries, orchgreen!80!black] at (12.5,9.8) {OpenCollage (Agents)};
+
+      %% ---- Divider ----
+      \draw[very thick, orchgray!30] (8,0) -- (8,9.4);
+      \node[font=\fontsize{8}{9}\selectfont\bfseries, orchgray, fill=white, inner sep=3pt] at (8,4.8) {\faIcon{equals}};
+
+      %% =============== KUBERNETES SIDE ===============
+
+      %% CLI
+      \fill[orchblue!8, rounded corners=4pt] (0.2,8.2) rectangle (6.8,9.2);
+      \draw[orchblue!40, rounded corners=4pt] (0.2,8.2) rectangle (6.8,9.2);
+      \node[font=\fontsize{5}{6}\selectfont\bfseries, orchblue] at (1.2,8.9) {\faIcon{terminal}};
+      \node[font=\fontsize{5}{6}\selectfont\bfseries, anchor=west] at (1.6,8.9) {kubectl};
+      \node[font=\fontsize{3.5}{4}\selectfont, orchgray, anchor=west] at (1.6,8.45) {\texttt{kubectl apply -f deployment.yaml}};
+
+      %% Dashboard
+      \fill[orchblue!8, rounded corners=4pt] (0.2,6.8) rectangle (6.8,7.8);
+      \draw[orchblue!40, rounded corners=4pt] (0.2,6.8) rectangle (6.8,7.8);
+      \node[font=\fontsize{5}{6}\selectfont\bfseries, orchblue] at (1.2,7.5) {\faIcon{tachometer-alt}};
+      \node[font=\fontsize{5}{6}\selectfont\bfseries, anchor=west] at (1.6,7.5) {K8s Dashboard};
+      \node[font=\fontsize{3.5}{4}\selectfont, orchgray, anchor=west] at (1.6,7.05) {Visual cluster management};
+
+      %% Orchestration layer
+      \fill[orchblue!15, rounded corners=4pt] (0.2,4.8) rectangle (6.8,6.4);
+      \draw[orchblue!50, thick, rounded corners=4pt] (0.2,4.8) rectangle (6.8,6.4);
+      \node[font=\fontsize{6}{7}\selectfont\bfseries] at (3.5,5.9) {\faIcon{cogs}\ \ Kubernetes};
+      \node[font=\fontsize{4}{5}\selectfont, orchgray] at (3.5,5.3) {Scheduling \textbar\ Scaling \textbar\ Networking};
+
+      %% YAML
+      \fill[orchblue!6, rounded corners=3pt] (0.5,3.6) rectangle (3.3,4.5);
+      \draw[orchblue!30, rounded corners=3pt] (0.5,3.6) rectangle (3.3,4.5);
+      \node[font=\fontsize{4}{5}\selectfont\bfseries] at (1.9,4.2) {\faIcon{file-code}\ YAML};
+      \node[font=\fontsize{3}{3.5}\selectfont, orchgray] at (1.9,3.85) {Manifests};
+
+      %% Monitoring
+      \fill[orchblue!6, rounded corners=3pt] (3.7,3.6) rectangle (6.5,4.5);
+      \draw[orchblue!30, rounded corners=3pt] (3.7,3.6) rectangle (6.5,4.5);
+      \node[font=\fontsize{4}{5}\selectfont\bfseries] at (5.1,4.2) {\faIcon{chart-line}\ Prometheus};
+      \node[font=\fontsize{3}{3.5}\selectfont, orchgray] at (5.1,3.85) {Metrics \& Traces};
+
+      %% Workloads
+      \tikzset{
+        container/.style={rectangle, draw, thick, rounded corners=2pt, fill=orchblue!10,
+                          draw=orchblue!40, text width=1cm, minimum height=0.9cm,
+                          font=\fontsize{3.5}{4}\selectfont\bfseries, text centered}
+      }
+      \node[container] (c1) at (1.2,2.2) {\faIcon{cube}\\Container};
+      \node[container] (c2) at (3.0,2.2) {\faIcon{cube}\\Container};
+      \node[container] (c3) at (4.8,2.2) {\faIcon{cube}\\Container};
+      \node[container] (c4) at (6.2,2.2) {\faIcon{cube}\\Container};
+
+      %% Runtimes
+      \fill[orchgray!8, rounded corners=3pt] (0.3,0.4) rectangle (6.7,1.3);
+      \draw[orchgray!30, rounded corners=3pt] (0.3,0.4) rectangle (6.7,1.3);
+      \node[font=\fontsize{4}{5}\selectfont\bfseries] at (3.5,1.0) {\faIcon{cogs}\ Container Runtimes};
+      \node[font=\fontsize{3}{3.5}\selectfont, orchgray] at (3.5,0.6) {containerd \textbar\ CRI-O \textbar\ Docker};
+
+      %% K8s Arrows
+      \draw[->, thick, orchblue!50] (3.5,8.2) -- (3.5,7.8);
+      \draw[->, thick, orchblue!50] (3.5,6.8) -- (3.5,6.4);
+      \draw[->, thick, orchblue!50] (1.9,4.8) -- (1.9,4.5);
+      \draw[->, thick, orchblue!50] (5.1,4.8) -- (5.1,4.5);
+      \draw[->, thick, orchblue!50] (1.2,3.6) -- (1.2,2.7);
+      \draw[->, thick, orchblue!50] (3.0,3.6) -- (3.0,2.7);
+      \draw[->, thick, orchblue!50] (4.8,3.6) -- (4.8,2.7);
+      \draw[->, thick, orchblue!50] (6.2,3.6) -- (6.2,2.7);
+      % Individual arrows from each container to runtimes
+      \draw[->, thick, orchgray!40] (c1.south) -- (c1 |- 1.3,1.3);
+      \draw[->, thick, orchgray!40] (c2.south) -- (c2 |- 1.3,1.3);
+      \draw[->, thick, orchgray!40] (c3.south) -- (c3 |- 1.3,1.3);
+      \draw[->, thick, orchgray!40] (c4.south) -- (c4 |- 1.3,1.3);
+
+      %% =============== OPENCOLLAGE SIDE ===============
+
+      %% CLI
+      \fill[orchgreen!8, rounded corners=4pt] (9.2,8.2) rectangle (15.8,9.2);
+      \draw[orchgreen!40, rounded corners=4pt] (9.2,8.2) rectangle (15.8,9.2);
+      \node[font=\fontsize{5}{6}\selectfont\bfseries, orchgreen!80!black] at (10.2,8.9) {\faIcon{terminal}};
+      \node[font=\fontsize{5}{6}\selectfont\bfseries, anchor=west] at (10.6,8.9) {o9ectl};
+      \node[font=\fontsize{3.5}{4}\selectfont, orchgray, anchor=west] at (10.6,8.45) {\texttt{o9ectl apply -f pipeline.yaml}};
+
+      %% Dashboard
+      \fill[orchgreen!8, rounded corners=4pt] (9.2,6.8) rectangle (15.8,7.8);
+      \draw[orchgreen!40, rounded corners=4pt] (9.2,6.8) rectangle (15.8,7.8);
+      \node[font=\fontsize{5}{6}\selectfont\bfseries, orchgreen!80!black] at (10.2,7.5) {\faIcon{tachometer-alt}};
+      \node[font=\fontsize{5}{6}\selectfont\bfseries, anchor=west] at (10.6,7.5) {o9e Dashboard};
+      \node[font=\fontsize{3.5}{4}\selectfont, orchgray, anchor=west] at (10.6,7.05) {Visual pipeline management};
+
+      %% Orchestration layer
+      \fill[orchgreen!15, rounded corners=4pt] (9.2,4.8) rectangle (15.8,6.4);
+      \draw[orchgreen!60, thick, rounded corners=4pt] (9.2,4.8) rectangle (15.8,6.4);
+      \node[font=\fontsize{6}{7}\selectfont\bfseries] at (12.5,5.9) {\faIcon{layer-group}\ \ OpenCollage};
+      \node[font=\fontsize{4}{5}\selectfont, orchgray] at (12.5,5.3) {Routing \textbar\ State \textbar\ Observability};
+
+      %% YAML
+      \fill[orchgreen!6, rounded corners=3pt] (9.5,3.6) rectangle (12.3,4.5);
+      \draw[orchgreen!30, rounded corners=3pt] (9.5,3.6) rectangle (12.3,4.5);
+      \node[font=\fontsize{4}{5}\selectfont\bfseries] at (10.9,4.2) {\faIcon{file-code}\ YAML};
+      \node[font=\fontsize{3}{3.5}\selectfont, orchgray] at (10.9,3.85) {Pipeline DAGs};
+
+      %% Monitoring
+      \fill[orchgreen!6, rounded corners=3pt] (12.7,3.6) rectangle (15.5,4.5);
+      \draw[orchgreen!30, rounded corners=3pt] (12.7,3.6) rectangle (15.5,4.5);
+      \node[font=\fontsize{4}{5}\selectfont\bfseries] at (14.1,4.2) {\faIcon{chart-line}\ OpenTelemetry};
+      \node[font=\fontsize{3}{3.5}\selectfont, orchgray] at (14.1,3.85) {Traces \& Costs};
+
+      %% Agents
+      \tikzset{
+        agentbox/.style={rectangle, draw, thick, rounded corners=2pt, fill=orchgreen!10,
+                         draw=orchgreen!40, text width=1cm, minimum height=0.9cm,
+                         font=\fontsize{3.5}{4}\selectfont\bfseries, text centered}
+      }
+      \node[agentbox] (a1) at (10.2,2.2) {\faIcon{robot}\\AutoGen};
+      \node[agentbox] (a2) at (12.0,2.2) {\faIcon{robot}\\CrewAI};
+      \node[agentbox] (a3) at (13.8,2.2) {\faIcon{robot}\\LangGraph};
+      \node[agentbox] (a4) at (15.2,2.2) {\faIcon{robot}\\Custom};
+
+      %% Adapter layer
+      \fill[orchgray!8, rounded corners=3pt] (9.3,0.4) rectangle (15.7,1.3);
+      \draw[orchgray!30, rounded corners=3pt] (9.3,0.4) rectangle (15.7,1.3);
+      \node[font=\fontsize{4}{5}\selectfont\bfseries] at (12.5,1.0) {\faIcon{plug}\ Framework Adapters};
+      \node[font=\fontsize{3}{3.5}\selectfont, orchgray] at (12.5,0.6) {initialize \textbar\ execute \textbar\ emit\textunderscore telemetry};
+
+      %% o9e Arrows
+      \draw[->, thick, orchgreen!50] (12.5,8.2) -- (12.5,7.8);
+      \draw[->, thick, orchgreen!50] (12.5,6.8) -- (12.5,6.4);
+      \draw[->, thick, orchgreen!50] (10.9,4.8) -- (10.9,4.5);
+      \draw[->, thick, orchgreen!50] (14.1,4.8) -- (14.1,4.5);
+      \draw[->, thick, orchgreen!50] (10.2,3.6) -- (10.2,2.7);
+      \draw[->, thick, orchgreen!50] (12.0,3.6) -- (12.0,2.7);
+      \draw[->, thick, orchgreen!50] (13.8,3.6) -- (13.8,2.7);
+      \draw[->, thick, orchgreen!50] (15.2,3.6) -- (15.2,2.7);
+      % Individual arrows from each agent to adapters
+      \draw[->, thick, orchgray!40] (a1.south) -- (a1 |- 1.3,1.3);
+      \draw[->, thick, orchgray!40] (a2.south) -- (a2 |- 1.3,1.3);
+      \draw[->, thick, orchgray!40] (a3.south) -- (a3 |- 1.3,1.3);
+      \draw[->, thick, orchgray!40] (a4.south) -- (a4 |- 1.3,1.3);
+
+    \end{tikzpicture}
+  \end{center}
+\end{frame}

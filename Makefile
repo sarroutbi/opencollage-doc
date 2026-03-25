@@ -1,4 +1,4 @@
-SUBDIRS=test-presentation
+SUBDIRS=inception
 
 all:
 	@for dir in $(SUBDIRS); do \
