@@ -133,8 +133,8 @@
 
         %% Contract box
         \node[rectangle, draw, dashed, orchblue, thick, rounded corners,
-              text width=6.5cm, minimum height=1cm, font=\fontsize{5.5}{6.5}\selectfont,
-              align=left, fill=white] at (3.5,0.3) {
+              text width=7cm, minimum height=1.2cm, font=\fontsize{6.5}{8}\selectfont,
+              align=left, fill=white, inner sep=6pt] at (3.5,0) {
           \textbf{Adapter Contract (4 methods):}\\
           1. \texttt{initialize(AgentConfig) -> void}\\
           2. \texttt{execute(HandoffPayload, Checkpoint) -> ExecutionResult}\\
@@ -247,8 +247,8 @@
 
         %% CLI
         \node[rectangle, draw, dashed, orchgray, rounded corners,
-              text width=5.5cm, font=\fontsize{6.5}{7.5}\selectfont, align=center,
-              fill=white] at (3,0.2) {
+              text width=6cm, font=\fontsize{7.5}{9}\selectfont, align=center,
+              fill=white, inner sep=6pt] at (3,0) {
           \texttt{o9ectl push security-analyst:2.1.0}\\
           \texttt{o9ectl pull code-reviewer:1.4.2}\\
           \texttt{o9ectl inspect security-analyst:2.1.0}

@@ -1,6 +1,7 @@
 \section{Roadmap}
 
 \begin{frame}{Roadmap: From Spec to Ecosystem}
+  \vspace{-0.5cm}
   \begin{block}{Core Message}
     \scriptsize
     A phased approach---spec first, reference implementation second,
@@ -10,12 +11,12 @@
   \vspace{0.3cm}
 
   \begin{center}
-    \begin{tikzpicture}[scale=0.72, transform shape,
+    \begin{tikzpicture}[scale=0.78, transform shape,
         phase/.style={rectangle, draw, thick, rounded corners,
-                      text width=2.4cm, text centered, minimum height=2cm, font=\tiny\bfseries}]
+                      text width=2.8cm, text centered, minimum height=2cm, font=\tiny\bfseries}]
 
       \node[phase, fill=orchred!15] (p0) at (0,0) {
-        \textbf{Phase 0}\\Q2 2026\\[3pt]
+        \textbf{Phase 0}\\[3pt]
         \normalfont\tiny
         Minimal registry demo\\
         \texttt{o9ectl} push/pull/deploy\\
@@ -23,7 +24,7 @@
         Agent manifest schema
       };
       \node[phase, fill=orchblue!15] (p1) at (3.5,0) {
-        \textbf{Phase 1}\\Q3 2026\\[3pt]
+        \textbf{Phase 1}\\[3pt]
         \normalfont\tiny
         Pipeline spec v1.0\\
         State protocol v1.0\\
@@ -31,7 +32,7 @@
         3 framework adapters
       };
       \node[phase, fill=orchgreen!15] (p2) at (7,0) {
-        \textbf{Phase 2}\\Q1 2027\\[3pt]
+        \textbf{Phase 2}\\[3pt]
         \normalfont\tiny
         OTel integration GA\\
         Schema registry\\
@@ -39,7 +40,7 @@
         Conformance suite v1
       };
       \node[phase, fill=orchorange!15] (p3) at (10.5,0) {
-        \textbf{Phase 3}\\Q3 2027\\[3pt]
+        \textbf{Phase 3}\\[3pt]
         \normalfont\tiny
         CNCF sandbox submission\\
         Adapter marketplace\\
@@ -67,26 +68,26 @@
 
 \begin{frame}{Roadmap: Phase Details}
   \vspace{-0.3cm}
-  \begin{exampleblock}{Phase 0 --- Proof of Concept (Q2 2026)}
+  \begin{exampleblock}{Phase 0 --- Proof of Concept}
     \scriptsize
     A minimal demo: deploy heterogeneous agents (CrewAI + AutoGen) from a single
     OCI-based registry using \texttt{o9ectl}---proving unified deployment across frameworks.
   \end{exampleblock}
   \vspace{-0.15cm}
-  \begin{block}{Phase 1 --- Foundation (Q3 2026)}
+  \begin{block}{Phase 1 --- Foundation}
     \scriptsize
     Pipeline spec v1.0, state protocol v1.0, Python reference implementation,
     and adapters for AutoGen, CrewAI, and LangGraph---enough to prove the concept
     with real multi-framework pipelines.
   \end{block}
   \vspace{-0.15cm}
-  \begin{block}{Phase 2 --- Production Readiness (Q1 2027)}
+  \begin{block}{Phase 2 --- Production Readiness}
     \scriptsize
     OpenTelemetry integration GA, schema registry, Kubernetes operator,
     and conformance suite v1---making OpenCollage production-grade.
   \end{block}
   \vspace{-0.15cm}
-  \begin{block}{Phase 3 --- Ecosystem (Q3 2027)}
+  \begin{block}{Phase 3 --- Ecosystem}
     \scriptsize
     CNCF sandbox submission, adapter marketplace, enterprise features,
     and multi-cluster support---scaling adoption across the industry.
