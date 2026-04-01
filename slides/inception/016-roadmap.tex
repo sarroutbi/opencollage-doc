@@ -10,36 +10,36 @@
   \vspace{0.3cm}
 
   \begin{center}
-    \begin{tikzpicture}[scale=0.62, transform shape,
+    \begin{tikzpicture}[scale=0.72, transform shape,
         phase/.style={rectangle, draw, thick, rounded corners,
-                      text width=2.6cm, text centered, minimum height=2.2cm, font=\tiny\bfseries}]
+                      text width=2.4cm, text centered, minimum height=2cm, font=\tiny\bfseries}]
 
-      \node[phase, fill=orchred!15] (p0) at (-3.5,0) {
-        \textbf{Phase 0}\\Q2 2026\\[4pt]
+      \node[phase, fill=orchred!15] (p0) at (0,0) {
+        \textbf{Phase 0}\\Q2 2026\\[3pt]
         \normalfont\tiny
         Minimal registry demo\\
         \texttt{o9ectl} push/pull/deploy\\
         CrewAI + AutoGen agents\\
         Agent manifest schema
       };
-      \node[phase, fill=orchblue!15] (p1) at (0.5,0) {
-        \textbf{Phase 1}\\Q3 2026\\[4pt]
+      \node[phase, fill=orchblue!15] (p1) at (3.5,0) {
+        \textbf{Phase 1}\\Q3 2026\\[3pt]
         \normalfont\tiny
         Pipeline spec v1.0\\
         State protocol v1.0\\
         Python reference impl\\
         3 framework adapters
       };
-      \node[phase, fill=orchgreen!15] (p2) at (4.5,0) {
-        \textbf{Phase 2}\\Q1 2027\\[4pt]
+      \node[phase, fill=orchgreen!15] (p2) at (7,0) {
+        \textbf{Phase 2}\\Q1 2027\\[3pt]
         \normalfont\tiny
         OTel integration GA\\
         Schema registry\\
         Kubernetes operator\\
         Conformance suite v1
       };
-      \node[phase, fill=orchorange!15] (p3) at (8.5,0) {
-        \textbf{Phase 3}\\Q3 2027\\[4pt]
+      \node[phase, fill=orchorange!15] (p3) at (10.5,0) {
+        \textbf{Phase 3}\\Q3 2027\\[3pt]
         \normalfont\tiny
         CNCF sandbox submission\\
         Adapter marketplace\\
@@ -48,26 +48,47 @@
       };
 
       % Timeline arrow
-      \draw[->, very thick, orchgray] (-5.5,-1.8) -- (10.5,-1.8);
-      \node[font=\tiny\bfseries, orchgray] at (2.5,-2.6) {Community-driven, RFC-gated milestones};
+      \draw[->, very thick, orchgray] (-1.8,-1.6) -- (12.3,-1.6);
+      \node[font=\tiny\bfseries, orchgray] at (5.25,-2.3) {Community-driven, RFC-gated milestones};
 
       % Phase markers
-      \fill[orchred] (-3.5,-1.8) circle (3pt);
-      \node[font=\tiny\bfseries, below] at (-3.5,-1.9) {v0.1};
-      \fill[orchgray] (0.5,-1.8) circle (3pt);
-      \node[font=\tiny\bfseries, below] at (0.5,-1.9) {v1.0};
-      \fill[orchgray] (4.5,-1.8) circle (3pt);
-      \node[font=\tiny\bfseries, below] at (4.5,-1.9) {v1.1};
-      \fill[orchgray] (8.5,-1.8) circle (3pt);
-      \node[font=\tiny\bfseries, below] at (8.5,-1.9) {v2.0};
+      \fill[orchred] (0,-1.6) circle (3pt);
+      \node[font=\tiny\bfseries, below] at (0,-1.7) {v0.1};
+      \fill[orchgray] (3.5,-1.6) circle (3pt);
+      \node[font=\tiny\bfseries, below] at (3.5,-1.7) {v1.0};
+      \fill[orchgray] (7,-1.6) circle (3pt);
+      \node[font=\tiny\bfseries, below] at (7,-1.7) {v1.1};
+      \fill[orchgray] (10.5,-1.6) circle (3pt);
+      \node[font=\tiny\bfseries, below] at (10.5,-1.7) {v2.0};
     \end{tikzpicture}
   \end{center}
 
-  \vspace{0.1cm}
+\end{frame}
 
-  \begin{exampleblock}{Phase 0 --- Proof of Concept}
+\begin{frame}{Roadmap: Phase Details}
+  \vspace{-0.3cm}
+  \begin{exampleblock}{Phase 0 --- Proof of Concept (Q2 2026)}
     \scriptsize
     A minimal demo: deploy heterogeneous agents (CrewAI + AutoGen) from a single
     OCI-based registry using \texttt{o9ectl}---proving unified deployment across frameworks.
   \end{exampleblock}
+  \vspace{-0.15cm}
+  \begin{block}{Phase 1 --- Foundation (Q3 2026)}
+    \scriptsize
+    Pipeline spec v1.0, state protocol v1.0, Python reference implementation,
+    and adapters for AutoGen, CrewAI, and LangGraph---enough to prove the concept
+    with real multi-framework pipelines.
+  \end{block}
+  \vspace{-0.15cm}
+  \begin{block}{Phase 2 --- Production Readiness (Q1 2027)}
+    \scriptsize
+    OpenTelemetry integration GA, schema registry, Kubernetes operator,
+    and conformance suite v1---making OpenCollage production-grade.
+  \end{block}
+  \vspace{-0.15cm}
+  \begin{block}{Phase 3 --- Ecosystem (Q3 2027)}
+    \scriptsize
+    CNCF sandbox submission, adapter marketplace, enterprise features,
+    and multi-cluster support---scaling adoption across the industry.
+  \end{block}
 \end{frame}
