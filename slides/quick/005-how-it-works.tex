@@ -1,0 +1,71 @@
+\section{How It Works}
+
+\begin{frame}[fragile]{How It Works: Pipeline + Adapters}
+  \vspace{-0.2cm}
+  \scriptsize
+  \begin{block}{Core Message}
+    \scriptsize
+    Define pipelines as YAML DAGs. Each agent runs through a lightweight
+    \textbf{adapter} that translates OpenCollage protocols into framework-native calls.
+  \end{block}
+
+  \vspace{0.1cm}
+
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{\faIcon{file-code}\ \ Pipeline Definition (YAML)}
+      \vspace{0.1cm}
+      \begin{lstlisting}
+apiVersion: opencollage/v1alpha1
+kind: Pipeline
+metadata:
+  name: incident-response
+spec:
+  agents:
+    - id: triage
+      framework: crewai
+      model: gpt-4o
+    - id: code-gen
+      framework: autogen
+      model: claude-sonnet
+  dag:
+    edges:
+      - from: triage
+        to: code-gen
+        condition: "severity >= HIGH"
+      \end{lstlisting}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{\faIcon{plug}\ \ Adapter Contract (4 methods)}
+      \vspace{0.2cm}
+
+      \begin{center}
+        \begin{tikzpicture}[scale=0.7, transform shape,
+            method/.style={rectangle, draw, thick, rounded corners,
+                           fill=orchblue!10, text width=3.2cm,
+                           text centered, minimum height=0.7cm, font=\tiny\bfseries}]
+          \node[method] (m1) at (0,0) {\faIcon{play}\ \ initialize(config)};
+          \node[method] (m2) at (0,-0.9) {\faIcon{cogs}\ \ execute(input, ckpt)};
+          \node[method] (m3) at (0,-1.8) {\faIcon{chart-line}\ \ emit\_telemetry(span)};
+          \node[method] (m4) at (0,-2.7) {\faIcon{heartbeat}\ \ status()};
+
+          \draw[->, thick, orchgray] (m1) -- (m2);
+          \draw[->, thick, orchgray] (m2) -- (m3);
+          \draw[->, thick, orchgray] (m3) -- (m4);
+        \end{tikzpicture}
+      \end{center}
+
+      \vspace{0.1cm}
+      \fontsize{6}{7}\selectfont
+      Write one adapter per framework.\\
+      Every agent becomes an OpenCollage citizen.
+    \end{column}
+  \end{columns}
+
+  \vspace{-0.4cm}
+
+  \begin{exampleblock}{}
+    \centering\scriptsize
+    Pipelines are \textbf{version-controlled}, \textbf{portable}, and \textbf{auditable}---just like Kubernetes manifests.
+  \end{exampleblock}
+\end{frame}

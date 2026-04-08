@@ -1,0 +1,62 @@
+\section{The Problem}
+
+\begin{frame}{AI Agents Are Powerful---But Isolated}
+  \scriptsize
+  \begin{alertblock}{Core Message}
+    \scriptsize
+    AI agent frameworks are incompatible. Agents built in one framework
+    cannot collaborate with agents in another---creating silos, vendor lock-in,
+    and duplicated effort.
+  \end{alertblock}
+
+  \vspace{0.3cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.7, transform shape,
+        silo/.style={rectangle, draw, thick, rounded corners, fill=orchgray!15,
+                     text width=2.2cm, text centered, minimum height=2.5cm, font=\tiny\bfseries},
+        agent/.style={circle, draw, fill=orchblue!20, minimum size=0.6cm, font=\tiny}]
+
+      % Silo 1
+      \node[silo] (s1) at (0,0) {};
+      \node[font=\tiny\bfseries, align=center] at (0,-0.4) {AutoGen\\Ecosystem};
+      \node[agent] at (-0.4,0.5) {};
+      \node[agent] at (0.4,0.5) {};
+
+      % Silo 2
+      \node[silo] (s2) at (3.5,0) {};
+      \node[font=\tiny\bfseries, align=center] at (3.5,-0.4) {CrewAI\\Ecosystem};
+      \node[agent] at (3.1,0.5) {};
+      \node[agent] at (3.9,0.5) {};
+
+      % Silo 3
+      \node[silo] (s3) at (7,0) {};
+      \node[font=\tiny\bfseries, align=center] at (7,-0.4) {LangGraph\\Ecosystem};
+      \node[agent] at (6.6,0.5) {};
+      \node[agent] at (7.4,0.5) {};
+
+      % Silo 4
+      \node[silo] (s4) at (10.5,0) {};
+      \node[font=\tiny\bfseries, align=center] at (10.5,-0.4) {Custom\\Agents};
+      \node[agent] at (10.1,0.5) {};
+      \node[agent] at (10.9,0.5) {};
+
+      % Walls
+      \draw[very thick, orchred, dashed] (1.75,-1.6) -- (1.75,1.6);
+      \draw[very thick, orchred, dashed] (5.25,-1.6) -- (5.25,1.6);
+      \draw[very thick, orchred, dashed] (8.75,-1.6) -- (8.75,1.6);
+
+      % No-connection indicators
+      \node[font=\Large, orchred, fill=white, inner sep=1pt] at (1.75,0) {\faIcon{times-circle}};
+      \node[font=\Large, orchred, fill=white, inner sep=1pt] at (5.25,0) {\faIcon{times-circle}};
+      \node[font=\Large, orchred, fill=white, inner sep=1pt] at (8.75,0) {\faIcon{times-circle}};
+    \end{tikzpicture}
+  \end{center}
+
+  \begin{exampleblock}{The Kubernetes Analogy}
+    \scriptsize
+    Before Kubernetes, every cloud had proprietary container orchestration.
+    The industry converged on an open standard---and the ecosystem exploded.
+    \textbf{AI agents need the same inflection point.}
+  \end{exampleblock}
+\end{frame}

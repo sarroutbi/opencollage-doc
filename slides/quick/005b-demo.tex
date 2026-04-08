@@ -1,0 +1,71 @@
+\section{Demo}
+
+\begin{frame}[fragile]{Demo: Agent Deployment Registry \& \texttt{o9ectl}}
+  \vspace{-0.2cm}
+  \scriptsize
+  \begin{block}{Goal}
+    \scriptsize
+    Deploy heterogeneous agents from different vendors/frameworks using a single
+    tool (\texttt{o9ectl}) and a unified Agent Deployment Registry.
+  \end{block}
+
+  \vspace{-0.1cm}
+
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \textbf{\faIcon{box}\ \ Two Agents, Two Frameworks}
+      \vspace{0.1cm}
+
+      \begin{center}
+        \begin{tikzpicture}[scale=0.8, transform shape,
+            agent/.style={rectangle, draw, thick, rounded corners,
+                          text width=3.4cm, text centered, minimum height=1.8cm, font=\tiny\bfseries}]
+          \node[agent, fill=orchblue!15] (a1) at (0,0) {
+            \faIcon{shield-alt}\ \textbf{security-analyst}\\[3pt]
+            \normalfont\tiny Acme Security\\
+            CrewAI \textbar\ gpt-4o\\
+            v2.1.0
+          };
+          \node[agent, fill=orchgreen!15] (a2) at (0,-2.6) {
+            \faIcon{code}\ \textbf{code-reviewer}\\[3pt]
+            \normalfont\tiny DevTools Inc.\\
+            AutoGen \textbar\ claude-sonnet\\
+            v1.0.0
+          };
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \textbf{\faIcon{terminal}\ \ Unified Workflow}
+      \vspace{0.1cm}
+      \begin{lstlisting}
+# Vendors push once
+$ o9ectl push \
+  registry.opencollage.io/\
+  security-analyst:2.1.0
+$ o9ectl push \
+  registry.opencollage.io/\
+  code-reviewer:1.0.0
+
+# User deploys both
+$ o9ectl deploy \
+  registry.opencollage.io/\
+  security-analyst:2.1.0
+$ o9ectl deploy \
+  registry.opencollage.io/\
+  code-reviewer:1.0.0
+
+# Or deploy as pipeline
+$ o9ectl apply pipeline.yaml
+      \end{lstlisting}
+    \end{column}
+  \end{columns}
+
+  \vspace{-0.4cm}
+
+  \begin{exampleblock}{}
+    \centering\scriptsize
+    One tool, one command, any agent---regardless of vendor.
+    The adapter contract replaces per-framework custom glue with a single unified integration point.
+  \end{exampleblock}
+\end{frame}

@@ -1,0 +1,70 @@
+\documentclass{beamer}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{hyperref}
+\usepackage{listings}
+\usetikzlibrary{shapes,arrows,positioning,fit,calc,backgrounds,decorations.markings}
+
+\usetheme{RedHat}
+
+%% Set the logo
+\redhatlogo{redhat-logo.png}
+
+%% Color definitions
+\definecolor{orchblue}{RGB}{50,100,180}
+\definecolor{orchgreen}{RGB}{40,167,69}
+\definecolor{orchorange}{RGB}{230,150,30}
+\definecolor{orchred}{RGB}{220,53,69}
+\definecolor{orchpurple}{RGB}{120,60,180}
+\definecolor{orchgray}{RGB}{100,100,100}
+\definecolor{orchlightbg}{RGB}{240,242,245}
+
+%% Code styling
+\lstdefinestyle{yamlstyle}{
+    backgroundcolor=\color{orchlightbg},
+    basicstyle=\ttfamily\tiny,
+    breaklines=true,
+    keywordstyle=\color{orchblue}\bfseries,
+    stringstyle=\color{orchgreen},
+    commentstyle=\color{orchgray},
+    showstringspaces=false,
+    tabsize=2
+}
+\lstset{style=yamlstyle}
+
+%% Custom font sizes
+\newcommand{\semitiny}{\fontsize{7}{8}\selectfont}
+
+%% Title Information
+\title{OpenCollage (o9e)}
+\subtitle{A Universal Open Standard for AI Agent Orchestration\\[4pt]
+\normalsize Quick Overview}
+\author{Sergio Arroutbi \\ Open-Source AI Architecture}
+\date{April 2026}
+
+\begin{document}
+
+%% Title Slide
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%% Index Slide
+\begin{frame}{Index}
+  \tiny
+  \tableofcontents
+\end{frame}
+
+\include{./001-the-problem}
+\include{./002-introducing-opencollage}
+\include{./003-core-architecture}
+\include{./004-use-case}
+\include{./004b-dashboard}
+\include{./005-how-it-works}
+\include{./005b-demo}
+\include{./006-roadmap}
+\include{./007-call-to-action}
+
+\end{document}

@@ -1,0 +1,67 @@
+\section{Roadmap}
+
+\begin{frame}{Roadmap: From Spec to Ecosystem}
+  \vspace{-0.3cm}
+  \begin{block}{Core Message}
+    \scriptsize
+    A phased approach---spec first, reference implementation second,
+    ecosystem third---ensures the standard is solid before adoption scales.
+  \end{block}
+
+  \vspace{0.3cm}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.78, transform shape,
+        phase/.style={rectangle, draw, thick, rounded corners,
+                      text width=2.8cm, text centered, minimum height=2cm, font=\tiny\bfseries}]
+
+      \node[phase, fill=orchred!15] (p0) at (0,0) {
+        \textbf{Phase 0}\\[3pt]
+        \normalfont\tiny
+        Minimal registry demo\\
+        \texttt{o9ectl} push/pull/deploy\\
+        CrewAI + AutoGen agents\\
+        Agent manifest schema
+      };
+      \node[phase, fill=orchblue!15] (p1) at (3.5,0) {
+        \textbf{Phase 1}\\[3pt]
+        \normalfont\tiny
+        Pipeline spec v1.0\\
+        State protocol v1.0\\
+        Python reference impl\\
+        3 framework adapters
+      };
+      \node[phase, fill=orchgreen!15] (p2) at (7,0) {
+        \textbf{Phase 2}\\[3pt]
+        \normalfont\tiny
+        OTel integration GA\\
+        Schema registry\\
+        Kubernetes operator\\
+        Conformance suite v1
+      };
+      \node[phase, fill=orchorange!15] (p3) at (10.5,0) {
+        \textbf{Phase 3}\\[3pt]
+        \normalfont\tiny
+        CNCF sandbox submission\\
+        Adapter marketplace\\
+        Enterprise features\\
+        Multi-cluster support
+      };
+
+      % Timeline arrow
+      \draw[->, very thick, orchgray] (-1.8,-1.6) -- (12.3,-1.6);
+      \node[font=\tiny\bfseries, orchgray] at (5.25,-2.3) {Community-driven, RFC-gated milestones};
+
+      % Phase markers
+      \fill[orchred] (0,-1.6) circle (3pt);
+      \node[font=\tiny\bfseries, below] at (0,-1.7) {v0.1};
+      \fill[orchgray] (3.5,-1.6) circle (3pt);
+      \node[font=\tiny\bfseries, below] at (3.5,-1.7) {v1.0};
+      \fill[orchgray] (7,-1.6) circle (3pt);
+      \node[font=\tiny\bfseries, below] at (7,-1.7) {v1.1};
+      \fill[orchgray] (10.5,-1.6) circle (3pt);
+      \node[font=\tiny\bfseries, below] at (10.5,-1.7) {v2.0};
+    \end{tikzpicture}
+  \end{center}
+
+\end{frame}

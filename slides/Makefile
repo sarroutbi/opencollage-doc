@@ -1,4 +1,5 @@
 SUBDIRS=inception
+SUBDIRS+=quick
 
 all:
 	@for dir in $(SUBDIRS); do \
